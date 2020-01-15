@@ -1,1 +1,1 @@
-# Karnaugh-Map-Generator
+# K-MapGenerator
