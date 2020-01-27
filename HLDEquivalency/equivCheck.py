@@ -17,5 +17,8 @@ def generate_equivalency(formula1, formula2):
     for steps, step_type in parse2[1]:
         final_steps2.append([util.pretty_print(steps[-1]), steps[:-1], util.StepTypes.get_message(step_type)])
 
-    return equal, str([parse1[0]], str(parse2[0]))
+    print("Are the statements equivalent? " + str(equal))
+    print("Statement 1 CDNF: " + str(parse1[0]))
+    print("Statement 2 CDNF: " + str(parse2[0]))
 
+generate_equivalency("A", "not(not(A))") 
