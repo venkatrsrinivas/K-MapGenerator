@@ -2,7 +2,11 @@ import sys;
 import equivCheck;
 
 def main(): 
-	print(equivCheck.generate_equivalency("A", "not(not(A))"))
+	inputFile = open(sys.argv[1], 'r');
+	for inputValue in inputFile:
+		inputValue = inputValue.strip("\n");
+		print(inputValue)
+		print(equivCheck.generate_equivalency(str(inputValue), str(inputValue)))
 
 if __name__ == '__main__':
 	main();
