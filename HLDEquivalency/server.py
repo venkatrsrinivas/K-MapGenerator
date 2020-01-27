@@ -3,7 +3,6 @@ import logical_equivalency
 import util
 
 def generate_equivalency(formula1, formula2):
-
     try:
         equal, parse1, parse2 = logical_equivalency.runner(formula1, formula2)
     except (SyntaxError, TypeError) as exception:
@@ -22,4 +21,4 @@ def generate_equivalency(formula1, formula2):
     print("Statement 1 CDNF: " + str(parse1[0]))
     print("Statement 2 CDNF: " + str(parse2[0]))
 
-generate_equivalency("A", "not(nots(A))") 
+generate_equivalency("A", "not(not(A))") 
