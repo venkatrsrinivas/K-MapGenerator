@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.messagebox
+from tkinter.filedialog import askopenfilename as askopenfilename
 
 def statusbar(x): # function for changing text in the statusbar at bottom of program
     statusb.config(text=x)
@@ -10,6 +11,10 @@ def notImplemented():
 
 def credits():
     tk.messagebox.showinfo("Credits", "Contributors:\nVenkat Srinivas\nAlexandra Hsueh\nTobias Park\n\nhttps://github.com/venkatrsrinivas/K-MapGenerator")
+
+def open():
+    file = askopenfilename(filetypes=(("K-Map Files", ".kmap"),))
+    return file
 
 root = tk.Tk() # initialize the window
 
@@ -38,7 +43,7 @@ root.config(menu=menu)
 filemenu = tk.Menu(menu)
 menu.add_cascade(label="File", menu=filemenu)
 filemenu.add_command(label="New", command=notImplemented)
-filemenu.add_command(label="Open", command=notImplemented)
+filemenu.add_command(label="Open", command=open)
 filemenu.add_command(label="Save", command=notImplemented)
 helpmenu = tk.Menu(menu)
 menu.add_cascade(label="Help", menu=helpmenu)
