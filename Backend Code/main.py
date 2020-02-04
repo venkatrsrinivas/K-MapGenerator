@@ -32,8 +32,8 @@ class AndExpressionTreeNode():
 					sValue += "1";
 		return sValue;
 
-	def countDistinctVariables(self):
-		return len(self.children);
+	def getDistinctVariables(self):
+		return self.children;
 
 
 class OrExpressionTreeNode():
@@ -54,13 +54,16 @@ class OrExpressionTreeNode():
 				sValues.append(cValue);
 		return sValues;
 
-	def countDistinctVariables(self):
-		totalNumVariables = 0;
+	def getDistinctVariables(self):
+		allExpressionVariables = [];
 		for k in range(0, len(self.children)):
 			currentChild = self.children[k];
 			if(currentChild != None):
-				totalNumVariables = max(totalNumVariables, currentChild.countDistinctVariables());
-		return totalNumVariables;
+				for currentVariable in currentChild.getDistinctVariables():
+					if(currentVariable != None):
+						if(not (currentVariable.value in allExpressionVariables)):
+							allExpressionVariables.append(currentVariable.value);
+		return allExpressionVariables;
 
 class NotExpressionTreeNode(RegularExpressionTreeNode):
 	#Constructor For NotExpressionTreeNode:
@@ -157,9 +160,11 @@ def buildExpressionTreeData(inputNormalForm):
 
 class KarnaughMap():
  	#Constructor For KarnaughMap
- 	def __init__(self, totalNumVariables):
- 		self.xTotalBits = math.floor(totalNumVariables/2);
- 		self.yTotalBits = math.ceil(totalNumVariables/2);
+ 	def __init__(self, allExpressionVariables):
+ 		self.allExpressionVariables = allExpressionVariables;
+ 		self.totalNumVariables = len(allExpressionVariables);
+ 		self.xTotalBits = math.floor(self.totalNumVariables/2);
+ 		self.yTotalBits = math.ceil(self.totalNumVariables/2);
  		self.rows = pow(2, self.xTotalBits);
  		self.columns = pow(2, self.yTotalBits);
  		self.matrix = [[0 for m in range(self.columns)] for k in range(self.rows)];
@@ -198,6 +203,7 @@ class KarnaughMap():
 
 def main(): 
 	#Load Boolean Expressions From Input .txt File:
+	countLines = 0;
 	inputFile = open(sys.argv[1], 'r') 
 	for inputValue in inputFile:
 		#Remove Newline Characters:
@@ -205,6 +211,8 @@ def main():
 		#Invoke Conversion to CDNF Form:
 		resultNormalForm = equivCheck.generate_equivalency(str(inputValue), str(inputValue))[1];
 		currentRoot = buildExpressionTreeData(resultNormalForm);
+		if(countLines != 0):
+			print("");
 		print(resultNormalForm)
 		print("Pre-Order Traversal:");
 		printPreOrder(currentRoot);
@@ -213,11 +221,12 @@ def main():
 		print(currentRoot.getSatisfyingValues());
 		print("Computed All Satisfying Values.\n");
 		print("Total # Variables:");
-		print(currentRoot.countDistinctVariables());
-		totalNumVariables = currentRoot.countDistinctVariables();
-		currentKMap = KarnaughMap(totalNumVariables);
+		print(currentRoot.getDistinctVariables());
+		currentKMap = KarnaughMap(currentRoot.getDistinctVariables());
 		currentKMap.setOneValues(currentRoot.getSatisfyingValues());
 		currentKMap.printMatrix();
+		print("Done w/ Karnaugh Map.");
+		countLines += 1;
 
 if __name__ == '__main__':
 	main();

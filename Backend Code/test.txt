@@ -1,2 +1,2 @@
 or(and(P, not(Q)), and(not(P), R))
-A
+iff(A, B)
