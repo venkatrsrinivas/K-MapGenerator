@@ -1,2 +1,2 @@
-iff(A, B)
-P  
+and(A, not(not(A)))
+A 
