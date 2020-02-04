@@ -174,7 +174,9 @@ class KarnaughMap():
  	#Note: Needs To Be Rewritten To Account For Only Changing One Bit
  	#That is, for >= 5 variables!
  	def strToIndex(self, input):
- 		if(len(input) <= 1):
+ 		if(len(input) == 0):
+ 			return 0;
+ 		if(len(input) == 1):
  			return int(input);
  		allTwoVariableData = ["00","01","11","10"];
  		return allTwoVariableData.index(input);
