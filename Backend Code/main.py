@@ -74,6 +74,7 @@ def parseAndExpression(start, end, currentExpression):
 				tempRegularTreeNode = RegularExpressionTreeNode(currentValue);
 				newAndTreeNode.children.append(tempRegularTreeNode);
 		k += 1;
+	newAndTreeNode.children.sort(key = lambda currentExpression: currentExpression.value)
 	return newAndTreeNode;
 
 def buildExpressionTreeData(inputNormalForm):
