@@ -1,4 +1,5 @@
 import sys;
+import math;
 import equivCheck;
 
 class RegularExpressionTreeNode():
@@ -31,6 +32,9 @@ class AndExpressionTreeNode():
 					sValue += "1";
 		return sValue;
 
+	def countDistinctVariables(self):
+		return len(self.children);
+
 
 class OrExpressionTreeNode():
 	#Constructor For OrExpressionTreeNode:
@@ -49,6 +53,14 @@ class OrExpressionTreeNode():
 				cValue = currentChild.getSatisfyingValues();
 				sValues.append(cValue);
 		return sValues;
+
+	def countDistinctVariables(self):
+		totalNumVariables = 0;
+		for k in range(0, len(self.children)):
+			currentChild = self.children[k];
+			if(currentChild != None):
+				totalNumVariables = max(totalNumVariables, currentChild.countDistinctVariables());
+		return totalNumVariables;
 
 class NotExpressionTreeNode(RegularExpressionTreeNode):
 	#Constructor For NotExpressionTreeNode:
@@ -141,7 +153,46 @@ def buildExpressionTreeData(inputNormalForm):
 	if(countOrValues == 0):
 		currentRoot.children.append(parseAndExpression(0, len(inputNormalForm)-1, inputNormalForm));
 	return currentRoot;
- 
+
+
+class KarnaughMap():
+ 	#Constructor For KarnaughMap
+ 	def __init__(self, totalNumVariables):
+ 		self.xTotalBits = math.floor(totalNumVariables/2);
+ 		self.yTotalBits = math.ceil(totalNumVariables/2);
+ 		self.rows = pow(2, self.xTotalBits);
+ 		self.columns = pow(2, self.yTotalBits);
+ 		self.matrix = [[0 for m in range(self.columns)] for k in range(self.rows)];
+
+ 	def setOneValues(self, allOneValues):
+ 		for currentOneValue in allOneValues:
+ 			currentX, currentY = currentOneValue[self.yTotalBits:], currentOneValue[0:self.yTotalBits];
+ 			xIndex, yIndex = self.strToIndex(currentX), self.strToIndex(currentY);
+ 			#print(xIndex, " ", yIndex);
+ 			self.matrix[xIndex][yIndex] = 1;
+
+ 	#Note: Needs To Be Rewritten To Account For Only Changing One Bit
+ 	#That is, for >= 5 variables!
+ 	def strToIndex(self, input):
+ 		if(len(input) <= 1):
+ 			return int(input);
+ 		allTwoVariableData = ["00","01","11","10"];
+ 		return allTwoVariableData.index(input);
+ 		# resultIndex = 0;
+ 		# tempInput = input;
+ 		# currentExponent = len(tempInput)-1;
+ 		# while(len(tempInput) != 0):
+ 		# 	currentValue = int(tempInput[0]);
+ 		# 	resultIndex += (currentValue*pow(2, currentExponent));
+ 		# 	tempInput = tempInput[1:];
+ 		# 	currentExponent -= 1;
+ 		# return resultIndex; 
+
+ 	def printMatrix(self):
+ 		for k in range(0, self.rows):
+ 			for m in range(0, self.columns):
+ 				print(self.matrix[k][m], end = " ");
+ 			print("");
 
 def main(): 
 	#Load Boolean Expressions From Input .txt File:
@@ -158,6 +209,13 @@ def main():
 		print("Done with Pre-Order Traversal.\n");
 		print("Get All Satisfying Values:");
 		print(currentRoot.getSatisfyingValues());
+		print("Computed All Satisfying Values.\n");
+		print("Total # Variables:");
+		print(currentRoot.countDistinctVariables());
+		totalNumVariables = currentRoot.countDistinctVariables();
+		currentKMap = KarnaughMap(totalNumVariables);
+		currentKMap.setOneValues(currentRoot.getSatisfyingValues());
+		currentKMap.printMatrix();
 
 if __name__ == '__main__':
 	main();
