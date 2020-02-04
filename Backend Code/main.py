@@ -20,6 +20,17 @@ class AndExpressionTreeNode():
 	def printValue(self):
 		print(self.value);
 
+	def getSatisfyingValues(self):
+		sValue = "";
+		for k in range(0, len(self.children)):
+			currentChild = self.children[k];
+			if(currentChild != None):
+				if(isinstance(currentChild, NotExpressionTreeNode)):
+					sValue += "0";
+				elif(isinstance(currentChild, RegularExpressionTreeNode)):
+					sValue += "1";
+		return sValue;
+
 
 class OrExpressionTreeNode():
 	#Constructor For OrExpressionTreeNode:
@@ -29,6 +40,15 @@ class OrExpressionTreeNode():
 
 	def printValue(self):
 		print(self.value);
+
+	def getSatisfyingValues(self):
+		sValues = [];
+		for k in range(0, len(self.children)):
+			currentChild = self.children[k];
+			if(currentChild != None):
+				cValue = currentChild.getSatisfyingValues();
+				sValues.append(cValue);
+		return sValues;
 
 class NotExpressionTreeNode(RegularExpressionTreeNode):
 	#Constructor For NotExpressionTreeNode:
@@ -74,7 +94,7 @@ def parseAndExpression(start, end, currentExpression):
 				tempRegularTreeNode = RegularExpressionTreeNode(currentValue);
 				newAndTreeNode.children.append(tempRegularTreeNode);
 		k += 1;
-	newAndTreeNode.children.sort(key = lambda currentExpression: currentExpression.value)
+	newAndTreeNode.children.sort(key = lambda currentExpression: currentExpression.value);
 	return newAndTreeNode;
 
 def buildExpressionTreeData(inputNormalForm):
@@ -135,7 +155,9 @@ def main():
 		print(resultNormalForm)
 		print("Pre-Order Traversal:");
 		printPreOrder(currentRoot);
-		print("Done with Pre-Order Traversal.");
+		print("Done with Pre-Order Traversal.\n");
+		print("Get All Satisfying Values:");
+		print(currentRoot.getSatisfyingValues());
 
 if __name__ == '__main__':
 	main();
