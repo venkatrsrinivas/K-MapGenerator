@@ -1,2 +1,1 @@
-and(A, not(not(A)))
-A 
+or(and(P, not(Q)), and(not(P), R)) 

@@ -6,6 +6,10 @@ class RegularExpressionTreeNode():
 	def __init__(self, value):
 		self.value = value;
 		self.children = [];
+	
+	def printValue(self):
+		print(self.value);
+
 
 class AndExpressionTreeNode():
 	#Constructor For AndExpressionTreeNode:
@@ -13,71 +17,103 @@ class AndExpressionTreeNode():
 		self.value = "&";
 		self.children = [];
 
+	def printValue(self):
+		print(self.value);
+
+
 class OrExpressionTreeNode():
 	#Constructor For OrExpressionTreeNode:
 	def __init__(self):
 		self.value = "|";
 		self.children = [];
 
-class NotExpressionTreeNode():
+	def printValue(self):
+		print(self.value);
+
+class NotExpressionTreeNode(RegularExpressionTreeNode):
 	#Constructor For NotExpressionTreeNode:
 	def __init__(self, value):
-		self.value = value;
-		self.children = [];
+		super(NotExpressionTreeNode, self).__init__(value);			
+
+	def printValue(self):
+		print("~" + self.value);
+
 				
 def printPreOrder(root): 
 	if(root != None):
-		print(root.value);
+		root.printValue();
 		for k in range(0, len(root.children)):
+			#print(root.children)
 			printPreOrder(root.children[k]);
 
-def printInOrder(root):
-	if(root == None):
-		return;
-	else:
-		total = len(root.children);
-		if(total != 0):
-			for k in range(0, total-1):
-				printInOrder(root.children[k]);
-			print(root.value);
-			printInOrder(root.children[total-1]);
-		else:
-			print(root.value);
+
+# def printInOrder(root):
+# 	if(root != None):
+# 		total = len(root.children);
+# 		if(total != 0):
+# 			for k in range(0, total-1):
+# 				printInOrder(root.children[k]);
+# 			print(root.value);
+# 			printInOrder(root.children[total-1]);
+# 		else:
+# 			print(root.value);
 
 
 def parseAndExpression(start, end, currentExpression):
 	newAndTreeNode = AndExpressionTreeNode();
-	for k in range(start, end+1):
+	k = start;
+	while(k <= end):
 		currentValue = currentExpression[k];
-		if(currentValue != "&"):
-			if(currentValue == "(" or currentValue == ")"):
-				continue;
+		if(currentValue != "&" and currentValue != "(" and currentValue != ")" and currentValue != " "):
 			if(currentValue == "~"):
-				k += 1;
-				newValue = currentExpression[k];
+				newValue = currentExpression[k+1];
 				tempNotTreeNode = NotExpressionTreeNode(newValue);
-				newAndTreeNode.append(tempNotTreeNode);
+				newAndTreeNode.children.append(tempNotTreeNode);
+				k += 1;
 			else:
 				tempRegularTreeNode = RegularExpressionTreeNode(currentValue);
 				newAndTreeNode.children.append(tempRegularTreeNode);
+		k += 1;
 	return newAndTreeNode;
 
 def buildExpressionTreeData(inputNormalForm):
 	countOrValues = 0;
 	currentRoot = OrExpressionTreeNode();
 	for k in range(0, len(inputNormalForm)): 
+		#Special Initial Case |: 
+		#For First |, Parse AndExpressionData To Left.
 		if(inputNormalForm[k] == "|"):
-			currentLocation = k;
-			end = -1;
-			while(inputNormalForm[k] != ")"):
-				k -= 1;
-			end = k;
-			k = currentLocation;
 			start = -1;
-			while(inputNormalForm[k] != "("):
-				k -= 1;
-			start = k;
+			end = -1;
+			#Store currentLocation To Remember "|" Position:
+			currentLocation = k;
+			if(countOrValues == 0):
+				while(inputNormalForm[k] != ")"):
+					k -= 1;
+				end = k;
+				#Reset Position, k:
+				k = currentLocation;
+				while(inputNormalForm[k] != "("):
+					k -= 1;
+				start = k;
+				#Reset Position To currentLocation:
+				k = currentLocation;
+				#Append CurrentAndExpression To Overall OrExpression:
+				newAndTreeNode = parseAndExpression(start, end, inputNormalForm);
+				currentRoot.children.append(newAndTreeNode);
+			#Regular Case |: 
+			#Parse AndExpressionData To Right Of | 
+			while(inputNormalForm[k] != ")"):
+				k += 1;
+			end = k;
+			#Reset Position To currentLocation:
 			k = currentLocation;
+			while(inputNormalForm[k] != "("):
+				k += 1;
+			start = k;
+			#Reset Position To currentLocation:
+			k = currentLocation;
+			#Append CurrentAndExpression To Overall OrExpression:
 			newAndTreeNode = parseAndExpression(start, end, inputNormalForm);
 			currentRoot.children.append(newAndTreeNode);
 			countOrValues += 1;
@@ -96,13 +132,9 @@ def main():
 		resultNormalForm = equivCheck.generate_equivalency(str(inputValue), str(inputValue))[1];
 		currentRoot = buildExpressionTreeData(resultNormalForm);
 		print(resultNormalForm)
-		print("Pre-Order Tranversal:");
+		print("Pre-Order Traversal:");
 		printPreOrder(currentRoot);
-		print(" ");
-		print("In-Order Tranversal:");
-		printInOrder(currentRoot);
-		print(" ");
-
+		print("Done with Pre-Order Traversal.");
 
 if __name__ == '__main__':
 	main();
