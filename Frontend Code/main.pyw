@@ -2,17 +2,19 @@ import tkinter as tk
 import tkinter.messagebox
 from tkinter.filedialog import askopenfilename as askopenfilename
 
-def statusbar(x): # function for changing text in the statusbar at bottom of program
+# function for changing text in the statusbar at bottom of program
+# args: x is the new text to put in the statusbar
+def statusbar(x): 
     statusb.config(text=x)
     statusb.pack(side=tk.BOTTOM, fill=tk.X)
 
-def notImplemented():
+def notImplemented(): # temporary placeholder function
     tk.messagebox.showerror("Error", "This feature not implemented yet.")
 
-def credits():
+def credits(): # credits dialog box
     tk.messagebox.showinfo("Credits", "Contributors:\nVenkat Srinivas\nAlexandra Hsueh\nTobias Park\n\nhttps://github.com/venkatrsrinivas/K-MapGenerator")
 
-def open():
+def open(): # opening a K-Map file in the program
     file = askopenfilename(filetypes=(("K-Map Files", ".kmap"),))
     return file
 
