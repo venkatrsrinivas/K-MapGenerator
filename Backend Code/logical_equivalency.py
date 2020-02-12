@@ -1,8 +1,8 @@
+# This file is from HLD-Equivalency
 import argparse
 from copy import deepcopy
 import forseti.parser
 import util
-
 
 def runner(formula1, formula2):
     formula1 = forseti.parser.parse(formula1)
@@ -12,7 +12,6 @@ def runner(formula1, formula2):
     statement2, steps2 = util.convert(deepcopy(formula2))
 
     return statement1 == statement2, [statement1, steps1], [statement2, steps2]
-
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(description="Generate Truth Table for a logical formula")
