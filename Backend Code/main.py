@@ -168,6 +168,8 @@ class KarnaughMap():
  		self.rows = pow(2, self.xTotalBits);
  		self.columns = pow(2, self.yTotalBits);
  		self.matrix = [[0 for m in range(self.columns)] for k in range(self.rows)];
+ 		# groupings will be represented as a list of tuples where we have the coordinates of the top left nad bottom right
+ 		self.groupings = [] 
 
  	def setOneValues(self, allOneValues):
  		for currentOneValue in allOneValues:
@@ -194,6 +196,35 @@ class KarnaughMap():
  		# 	tempInput = tempInput[1:];
  		# 	currentExponent -= 1;
  		# return resultIndex; 
+
+ 	def addGrouping(topLeft, bottomRight):
+ 		x1,y1 = topLeft
+ 		x2,y2 = bottomRight
+ 		val = None
+ 		good = True
+ 		for k in range(x1, x2+1):
+ 			for m in range(y1, y2+1):
+ 				if val == None:
+ 					val = self.matrix[k][m]
+ 				else:
+ 					if not val == self.matrix[k][m]:
+ 						good = False
+ 						break
+ 			if not good:
+ 				break
+ 		if not good:
+ 			print("Bad grouping\n")
+ 		else:
+ 			group = (topLeft, bottomRight)
+ 			if group not in self.groupings:
+ 				self.groupings.append(group)
+
+ 	def removeGrouping(topLeft, bottomRight):
+ 		x1,y1 = topLeft
+ 		x2,y2 = bottomRight
+ 		if group not in self.groupings:
+ 			print("Grouping does not exist")
+ 		self.groupings.remove(group)
 
  	def printMatrix(self):
  		for k in range(0, self.rows):
