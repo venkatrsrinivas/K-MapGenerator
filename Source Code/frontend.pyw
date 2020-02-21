@@ -61,13 +61,14 @@ helpmenu.add_command(label="Credits", command=credits)
 
 
 allKarnaughMaps = backend.main();
-for currentKMap in allKarnaughMaps:
-    w = Text(root, width=2*currentKMap.columns, height=currentKMap.rows)
-    for x in range (0, currentKMap.rows):
-        for y in range (0, currentKMap.columns):
-            w.insert(END, str(currentKMap.matrix[x][y]) + ' ')
-        w.insert(END, '\n')
-        w.pack()
+if(allKarnaughMaps != None):
+    for currentKMap in allKarnaughMaps:
+        w = Text(root, width=2*currentKMap.columns, height=currentKMap.rows)
+        for x in range (0, currentKMap.rows):
+            for y in range (0, currentKMap.columns):
+                w.insert(END, str(currentKMap.matrix[x][y]) + ' ')
+            w.insert(END, '\n')
+            w.pack()
 
 
 #Initialize Canvas For Where Frontend Elements Live
