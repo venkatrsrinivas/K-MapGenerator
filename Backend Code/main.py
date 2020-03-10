@@ -197,7 +197,7 @@ class KarnaughMap():
  		# 	currentExponent -= 1;
  		# return resultIndex; 
 
- 	def addGrouping(topLeft, bottomRight):
+ 	def addGrouping(self, topLeft, bottomRight):
  		x1,y1 = topLeft
  		x2,y2 = bottomRight
  		val = None
@@ -219,17 +219,22 @@ class KarnaughMap():
  			if group not in self.groupings:
  				self.groupings.append(group)
 
- 	def removeGrouping(topLeft, bottomRight):
+ 	def removeGrouping(self, topLeft, bottomRight):
  		x1,y1 = topLeft
  		x2,y2 = bottomRight
+ 		group = (topLeft, bottomRight)
  		if group not in self.groupings:
  			print("Grouping does not exist")
- 		self.groupings.remove(group)
+ 		else:
+ 			self.groupings.remove(group)
+
+ 	def printGrouping(self):
+ 		print(self.groupings)
 
  	def printMatrix(self):
  		for k in range(0, self.rows):
  			for m in range(0, self.columns):
- 				print(self.matrix[k][m], end = " ");
+ 				print(self.matrix[k][m], end = " ")
  			print("");
 
 def main(): 
@@ -258,6 +263,15 @@ def main():
 		currentKMap.printMatrix();
 		print("Done w/ Karnaugh Map.");
 		countLines += 1;
+
+		print("Grouping Testing");
+		currentKMap.printMatrix();
+		topL = (1,0)
+		botR = (1,1)
+		currentKMap.addGrouping(topL, botR)
+		currentKMap.printGrouping()
+		currentKMap.removeGrouping(topL, botR)
+		currentKMap.printGrouping();
 
 if __name__ == '__main__':
 	main();
