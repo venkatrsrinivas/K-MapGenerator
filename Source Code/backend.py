@@ -237,10 +237,17 @@ class KarnaughMap():
  				print(self.matrix[k][m], end = " ")
  			print("");
 
+ 	def getMatrix(self):
+ 		return self.matrix;
+
 def main(): 
 	#Load Boolean Expressions From Input .txt File:
+	if(len(sys.argv) < 2):
+		print("Uh-OH!");
+		return;
 	countLines = 0;
-	inputFile = open(sys.argv[1], 'r') 
+	inputFile = open(sys.argv[1], 'r');
+	allKarnaughMaps = []; 
 	for inputValue in inputFile:
 		#Remove Newline Characters:
 		inputValue = inputValue.strip("\n") 
@@ -249,20 +256,23 @@ def main():
 		currentRoot = buildExpressionTreeData(resultNormalForm);
 		if(countLines != 0):
 			print("");
-		print(resultNormalForm)
-		print("Pre-Order Traversal:");
-		printPreOrder(currentRoot);
-		print("Done with Pre-Order Traversal.\n");
-		print("Get All Satisfying Values:");
-		print(currentRoot.getSatisfyingValues());
-		print("Computed All Satisfying Values.\n");
-		print("Total # Variables:");
-		print(currentRoot.getDistinctVariables());
+		#print(resultNormalForm)
+		#print("Pre-Order Traversal:");
+		#printPreOrder(currentRoot);
+		#print("Done with Pre-Order Traversal.\n");
+		#print("Get All Satisfying Values:");
+		#print(currentRoot.getSatisfyingValues());
+		#print("Computed All Satisfying Values.\n");
+		#print("Total # Variables:");
+		#print(currentRoot.getDistinctVariables());
 		currentKMap = KarnaughMap(currentRoot.getDistinctVariables());
 		currentKMap.setOneValues(currentRoot.getSatisfyingValues());
-		currentKMap.printMatrix();
-		print("Done w/ Karnaugh Map.");
+		#currentKMap.printMatrix();
+		#print("Done w/ Karnaugh Map.");
 		countLines += 1;
+		allKarnaughMaps.append(currentKMap);
+	return allKarnaughMaps;
+		
 
 		print("Grouping Testing");
 		currentKMap.printMatrix();
