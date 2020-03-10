@@ -271,8 +271,6 @@ def main():
 		#print("Done w/ Karnaugh Map.");
 		countLines += 1;
 		allKarnaughMaps.append(currentKMap);
-	return allKarnaughMaps;
-		
 
 		print("Grouping Testing");
 		currentKMap.printMatrix();
