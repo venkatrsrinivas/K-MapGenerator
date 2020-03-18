@@ -64,12 +64,15 @@ allKarnaughMaps = backend.main();
 if(allKarnaughMaps != None):
     for currentKMap in allKarnaughMaps:
         w = Text(root, width=2*currentKMap.columns, height=currentKMap.rows)
-        for x in range (0, currentKMap.rows):
-            for y in range (0, currentKMap.columns):
-                w.insert(END, str(currentKMap.matrix[x][y]) + ' ')
+        for x in range(0, currentKMap.rows):
+            for y in range(0, currentKMap.columns):
+                if(y != currentKMap.columns - 1):
+                    w.insert(END, str(currentKMap.matrix[x][y]) + ' ')
+                else:
+                    w.insert(END, str(currentKMap.matrix[x][y]))
             w.insert(END, '\n')
             w.pack()
-
+        w.insert(END, '\n')
 
 #Initialize Canvas For Where Frontend Elements Live
 canvas = tk.Canvas(root, width=800, height=600, bd=0, highlightthickness=0) 

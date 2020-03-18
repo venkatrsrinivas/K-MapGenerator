@@ -346,19 +346,19 @@ def main():
 		currentRoot = buildExpressionTreeData(resultNormalForm);
 		if(countLines != 0):
 			print("");
-		#print(resultNormalForm)
-		#print("Pre-Order Traversal:");
-		#printPreOrder(currentRoot);
-		#print("Done with Pre-Order Traversal.\n");
-		#print("Get All Satisfying Values:");
-		#print(currentRoot.getSatisfyingValues());
-		#print("Computed All Satisfying Values.\n");
-		#print("Total # Variables:");
-		#print(currentRoot.getDistinctVariables());
+		print(resultNormalForm)
+		print("Pre-Order Traversal:");
+		printPreOrder(currentRoot);
+		print("Done with Pre-Order Traversal.\n");
+		print("Get All Satisfying Values:");
+		print(currentRoot.getSatisfyingValues());
+		print("Computed All Satisfying Values.\n");
+		print("Total # Variables:");
+		print(currentRoot.getDistinctVariables());
 		currentKMap = KarnaughMap(currentRoot.getDistinctVariables());
 		currentKMap.setOneValues(currentRoot.getSatisfyingValues());
-		#currentKMap.printMatrix();
-		#print("Done w/ Karnaugh Map.");
+		currentKMap.printMatrix();
+		print("Done w/ Karnaugh Map.");
 		countLines += 1;
 		allKarnaughMaps.append(currentKMap);
 
