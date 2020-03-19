@@ -1,4 +1,2 @@
+or(P, not(P))
 or(and(P, not(Q)), and(not(P), R))
-iff(A, B)
-if(A,B)
-and(P, and(Q, and(R, S)))

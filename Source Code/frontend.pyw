@@ -1,5 +1,5 @@
 import tkinter as tk
-import tkinter.messagebox
+import tkinter.messagebox as messagebox
 from tkinter.filedialog import askopenfilename as askopenfilename
 import sys
 import backend
@@ -60,23 +60,43 @@ helpmenu.add_command(label="Instructions", command=notImplemented)
 helpmenu.add_command(label="Credits", command=credits)
 
 
-allKarnaughMaps = backend.main();
-if(allKarnaughMaps != None):
-    for currentKMap in allKarnaughMaps:
-        w = Text(root, width=2*currentKMap.columns, height=currentKMap.rows)
-        for x in range(0, currentKMap.rows):
-            for y in range(0, currentKMap.columns):
-                if(y != currentKMap.columns - 1):
-                    w.insert(END, str(currentKMap.matrix[x][y]) + ' ')
-                else:
-                    w.insert(END, str(currentKMap.matrix[x][y]))
-            w.insert(END, '\n')
-            w.pack()
-        w.insert(END, '\n')
+currentKMap, variables = backend.main()
+w = Text(root, width=2*(currentKMap.columns)-1, height=currentKMap.rows, font=("Arial", 32))
+for x in range(0, currentKMap.rows):
+    for y in range(0, currentKMap.columns):
+        if(y != currentKMap.columns - 1):
+            w.insert(END, str(currentKMap.matrix[x][y]) + ' ')
+        else:
+            w.insert(END, str(currentKMap.matrix[x][y]))
+    w.insert(END, '\n')
+w.insert(END, '\n')
 
-#Initialize Canvas For Where Frontend Elements Live
-canvas = tk.Canvas(root, width=800, height=600, bd=0, highlightthickness=0) 
-canvas.pack()
+w.config(state=DISABLED)
+
+
+# Here we hardcode the positioning of the matrix and its labels.
+# We know this is not an elegant solution, but given the circumstances and time constraints 
+# this was the best solution.
+numVars = len(variables)
+if numVars == 0:
+    print("0 variables")
+    messagebox.showerror("Error", "Error: This expression has 0 variables and is not valid. Please choose another file to load.")
+elif numVars == 1:
+    print("1 variables")
+    w.grid(row=1)
+    labels = Text(root, width=20, height=10, font=("Arial", 28))
+    labels.insert(END, "P  0 1")
+    labels.grid(row=0)
+    w.grid(row=1)
+elif numVars == 2:
+    print("2 variables")
+elif numVars == 3:
+    print("3 variables")
+elif numVars == 4:
+    print("4 variables")
+else:
+    print("> 4 variables")
+    messagebox.showerror("Error", "Error: Expressions with more than 4 variables are not supported at this time. Please choose another file to load.")
 
 #Keep Program Alive
 tk.mainloop()

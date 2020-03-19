@@ -354,23 +354,17 @@ def main():
 		print(currentRoot.getSatisfyingValues());
 		print("Computed All Satisfying Values.\n");
 		print("Total # Variables:");
-		print(currentRoot.getDistinctVariables());
+		variables = currentRoot.getDistinctVariables()
+		print(variables);
 		currentKMap = KarnaughMap(currentRoot.getDistinctVariables());
 		currentKMap.setOneValues(currentRoot.getSatisfyingValues());
 		currentKMap.printMatrix();
 		print("Done w/ Karnaugh Map.");
 		countLines += 1;
 
-		print("Grouping Testing");
-		currentKMap.printMatrix();
-		topL = (1,0)
-		botR = (1,1)
-		currentKMap.addGrouping(topL, botR)
-		currentKMap.printGrouping()
-		currentKMap.removeGrouping(topL, botR)
-		currentKMap.printGrouping();
+		
 		allKarnaughMaps.append(currentKMap);
-	return allKarnaughMaps;
+	return allKarnaughMaps[0], variables
 
 if __name__ == '__main__':
 	main();
