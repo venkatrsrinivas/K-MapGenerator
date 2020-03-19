@@ -360,7 +360,6 @@ def main():
 		currentKMap.printMatrix();
 		print("Done w/ Karnaugh Map.");
 		countLines += 1;
-		allKarnaughMaps.append(currentKMap);
 
 		print("Grouping Testing");
 		currentKMap.printMatrix();
@@ -370,6 +369,8 @@ def main():
 		currentKMap.printGrouping()
 		currentKMap.removeGrouping(topL, botR)
 		currentKMap.printGrouping();
+		allKarnaughMaps.append(currentKMap);
+	return allKarnaughMaps;
 
 if __name__ == '__main__':
 	main();
