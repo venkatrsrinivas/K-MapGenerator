@@ -2,6 +2,7 @@ or(and(P, not(Q)), and(not(P), R))
 iff(A, B)
 if(A,B)
 and(P, and(Q, and(R, S)))
-and(or(P, Q), not(or(P,Q)))
-P
 or(and(P, not(P)), Q)
+P
+and(or(P, Q), not(or(P,Q)))
+and(P, not(P))
