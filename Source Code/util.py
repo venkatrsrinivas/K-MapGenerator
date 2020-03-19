@@ -63,10 +63,15 @@ def convert(statement):
              [perform_annihilation, StepTypes.ANNIHILATION],
              [perform_idempotence_disjuncts, StepTypes.IDEMPOTENCE_DISJUNCT],
              [perform_commutation_disjuncts, StepTypes.COMMUTATION]]
-    for step in steps:
-        statement, step_list = _run_change(statement, symbols, step_list, step[0], step[1])
 
-    return statement, step_list
+    for step in steps:
+        prevStatement = deepcopy(statement)
+        statement, step_list = _run_change(statement, symbols, step_list, step[0], step[1])
+        if(str(statement) == "⊥"):
+            statement = prevStatement;
+            return statement, step_list, True
+
+    return statement, step_list, False
 
 
 def _run_change(statement, symbol_list, step_list, function, step_type):

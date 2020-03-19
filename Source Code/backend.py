@@ -112,9 +112,11 @@ def parseAndExpression(start, end, currentExpression):
 	newAndTreeNode.children.sort(key = lambda currentExpression: currentExpression.value);
 	return newAndTreeNode;
 
-def buildExpressionTreeData(inputNormalForm):
+def buildExpressionTreeData(inputNormalForm, isContradiction):
 	countOrValues = 0;
 	currentRoot = OrExpressionTreeNode();
+	if(isContradiction):
+		return currentRoot;
 	for k in range(0, len(inputNormalForm)): 
 		#Special Initial Case |: 
 		#For First |, Parse AndExpressionData To Left.
@@ -342,8 +344,10 @@ def main():
 		#Remove Newline Characters:
 		inputValue = inputValue.strip("\n") 
 		#Invoke Conversion to CDNF Form:
-		resultNormalForm = equivCheck.generate_equivalency(str(inputValue), str(inputValue))[1];
-		currentRoot = buildExpressionTreeData(resultNormalForm);
+		outputFromHLDEquiv = equivCheck.generate_equivalency(str(inputValue), str(inputValue))
+		resultNormalForm = outputFromHLDEquiv[1]
+		isContradiction = outputFromHLDEquiv[3]
+		currentRoot = buildExpressionTreeData(resultNormalForm, isContradiction);
 		if(countLines != 0):
 			print("");
 		print(resultNormalForm)
@@ -360,15 +364,15 @@ def main():
 		currentKMap.printMatrix();
 		print("Done w/ Karnaugh Map.");
 		countLines += 1;
-
 		print("Grouping Testing");
 		currentKMap.printMatrix();
-		topL = (1,0)
-		botR = (1,1)
-		currentKMap.addGrouping(topL, botR)
-		currentKMap.printGrouping()
-		currentKMap.removeGrouping(topL, botR)
-		currentKMap.printGrouping();
+		if(currentKMap.totalNumVariables >= 2):
+			topL = (1,0)
+			botR = (1,1)
+			currentKMap.addGrouping(topL, botR)
+			currentKMap.printGrouping()
+			currentKMap.removeGrouping(topL, botR)
+			currentKMap.printGrouping();
 		allKarnaughMaps.append(currentKMap);
 	return allKarnaughMaps;
 
