@@ -1,2 +1,1 @@
-or(P, not(P))
-or(and(P, not(Q)), and(not(P), R))
+P
