@@ -367,7 +367,7 @@ def main():
 		countLines += 1;
 
 		allKarnaughMaps.append(currentKMap);
-	return allKarnaughMaps[0], variables
+	return allKarnaughMaps[0], variables, outputFromHLDEquiv[5]
 
 if __name__ == '__main__':
 	main();

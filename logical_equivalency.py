@@ -11,7 +11,7 @@ def runner(formula1, formula2):
     statement1, steps1, isContra1 = util.convert(deepcopy(formula1))
     statement2, steps2, isContra2 = util.convert(deepcopy(formula2))
 
-    return statement1 == statement2, [statement1, steps1, isContra1], [statement2, steps2, isContra2]
+    return statement1 == statement2, [statement1, steps1, isContra1], [statement2, steps2, isContra2], formula1
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(description="Generate Truth Table for a logical formula")

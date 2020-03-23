@@ -62,7 +62,11 @@ helpmenu.add_command(label="Credits", command=credits)
 canvas = Canvas(root, width=800, height=600, bd=0, highlightthickness=0)
 canvas.pack()
 
-currentKMap, variables = backend.main()
+currentKMap, variables, original = backend.main()
+canvas.create_text(400, 15, text="Expression: " + str(original), font=('Arial', 18))
+
+
+
 w = Text(canvas, width=2*(currentKMap.columns)-1, height=currentKMap.rows, font=("Arial", 32))
 for x in range(0, currentKMap.rows):
     for y in range(0, currentKMap.columns):
@@ -129,5 +133,19 @@ else:
     print("> 4 variables")
     messagebox.showerror("Error", "Error: Expressions with more than 4 variables are not supported at this time. Please choose another file to load.")
 
+canvas.create_text(200, 375, text="  Create Grouping  ", font=('Arial', 20))
+canvas.create_text(600, 375, text="  Merge Groupings  ", font=('Arial', 20))
+canvas.create_line(80, 400, 330, 400)
+canvas.create_line(475, 400, 725, 400)
+canvas.create_text(100, 420, text="Upper-Left Coordinates:", font=('Arial', 12))
+canvas.create_text(300, 420, text="Lower-Right Coordinates:", font=('Arial', 12))
+canvas.create_text(34, 450, text="X=", font=('Arial', 10))
+canvas.create_text(110, 450, text="Y=", font=('Arial', 10))
+create_grouping_ul_x = tk.Entry(canvas, width=6)
+create_grouping_ul_y = tk.Entry(canvas, width=6)
+create_grouping_lr_x = tk.Entry(canvas, width=10)
+create_grouping_lr_y = tk.Entry(canvas, width=10)
+create_grouping_ul_x.place(relx=.06, rely=.82, anchor=SW)
+create_grouping_ul_y.place(relx=.16, rely=.82, anchor=SW)
 #Keep Program Alive
 tk.mainloop()
