@@ -45,13 +45,14 @@ class OrExpressionTreeNode():
 	def printValue(self):
 		print(self.value);
 
-	def getSatisfyingValues(self):
+	def getSatisfyingValues(self, isContradiction):
 		sValues = [];
-		for k in range(0, len(self.children)):
-			currentChild = self.children[k];
-			if(currentChild != None):
-				cValue = currentChild.getSatisfyingValues();
-				sValues.append(cValue);
+		if(not(isContradiction)):
+			for k in range(0, len(self.children)):
+				currentChild = self.children[k];
+				if(currentChild != None):
+					cValue = currentChild.getSatisfyingValues();
+					sValues.append(cValue);
 		return sValues;
 
 	def getDistinctVariables(self):
@@ -223,6 +224,7 @@ class KarnaughMap():
  		if not good:
  			print("Bad grouping: there is a zero in this grouping\n")
  		return good
+
  	def addWrapUpGrouping(self, topLeft, bottomRight):
  		# this is the case when BottomRight is Above Top Left
  		# splits the grouping and determines validity of each half
@@ -342,7 +344,9 @@ def main():
 		#Remove Newline Characters:
 		inputValue = inputValue.strip("\n") 
 		#Invoke Conversion to CDNF Form:
-		resultNormalForm = equivCheck.generate_equivalency(str(inputValue), str(inputValue))[1];
+		outputFromHLDEquiv = equivCheck.generate_equivalency(str(inputValue), str(inputValue))
+		resultNormalForm = outputFromHLDEquiv[1]
+		isContradiction = outputFromHLDEquiv[3]
 		currentRoot = buildExpressionTreeData(resultNormalForm);
 		if(countLines != 0):
 			print("");
@@ -351,18 +355,17 @@ def main():
 		printPreOrder(currentRoot);
 		print("Done with Pre-Order Traversal.\n");
 		print("Get All Satisfying Values:");
-		print(currentRoot.getSatisfyingValues());
+		print(currentRoot.getSatisfyingValues(isContradiction));
 		print("Computed All Satisfying Values.\n");
 		print("Total # Variables:");
 		variables = currentRoot.getDistinctVariables()
 		print(variables);
 		currentKMap = KarnaughMap(currentRoot.getDistinctVariables());
-		currentKMap.setOneValues(currentRoot.getSatisfyingValues());
+		currentKMap.setOneValues(currentRoot.getSatisfyingValues(isContradiction));
 		currentKMap.printMatrix();
 		print("Done w/ Karnaugh Map.");
 		countLines += 1;
 
-		
 		allKarnaughMaps.append(currentKMap);
 	return allKarnaughMaps[0], variables
 
