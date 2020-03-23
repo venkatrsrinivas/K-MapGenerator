@@ -78,17 +78,26 @@ w.config(state=DISABLED)
 
 
 numVars = len(variables)
+w.place(relx=.5, rely=.25, anchor=N)
 if numVars == 0:
     print("0 variables")
     messagebox.showerror("Error", "Error: This expression has 0 variables and is not valid. Please choose another file to load.")
 elif numVars == 1:
     print("1 variables")
-    w.place(relx=.5, rely=.25, anchor=N)
-    canvas.create_text(345, 120, text=variables[0], font=('Arial bold', 20))
+    canvas.create_line(310, 90, 360, 140)
+    canvas.create_text(345, 100, text=variables[0], font=('Arial bold', 20))
     canvas.create_text(375, 120, text="0", font=('Arial', 20))
     canvas.create_text(410, 120, text="1", font=('Arial', 20))
 elif numVars == 2:
     print("2 variables")
+    canvas.create_line(310, 90, 360, 140)
+    canvas.create_text(345, 100, text=variables[0], font=('Arial bold', 20))
+    canvas.create_text(325, 130, text=variables[1], font=('Arial bold', 20))
+    canvas.create_text(375, 120, text="0", font=('Arial', 20))
+    canvas.create_text(410, 120, text="1", font=('Arial', 20))
+    canvas.create_text(350, 165, text="0", font=('Arial', 20))
+    canvas.create_text(350, 215, text="1", font=('Arial', 20))
+
 elif numVars == 3:
     print("3 variables")
 elif numVars == 4:
