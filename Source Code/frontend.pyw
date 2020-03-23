@@ -97,11 +97,34 @@ elif numVars == 2:
     canvas.create_text(410, 120, text="1", font=('Arial', 20))
     canvas.create_text(350, 165, text="0", font=('Arial', 20))
     canvas.create_text(350, 215, text="1", font=('Arial', 20))
-
 elif numVars == 3:
     print("3 variables")
+    canvas.create_line(250, 80, 310, 140)
+    canvas.create_text(290, 95, text=variables[0]+variables[1], font=('Arial bold', 20))
+    canvas.create_text(270, 125, text=variables[2], font=('Arial bold', 20))
+    canvas.create_text(325, 120, text="00", font=('Arial', 20))
+    canvas.create_text(360, 120, text="01", font=('Arial', 20))
+
+    canvas.create_text(395, 120, text="11", font=('Arial', 20))
+    canvas.create_text(430, 120, text="10", font=('Arial', 20))
+
+    canvas.create_text(300, 165, text="0", font=('Arial', 20))
+    canvas.create_text(300, 215, text="1", font=('Arial', 20))
 elif numVars == 4:
     print("4 variables")
+    canvas.create_line(250, 80, 310, 140)
+    canvas.create_text(290, 95, text=variables[0]+variables[1], font=('Arial bold', 20))
+    canvas.create_text(265, 125, text=variables[2]+variables[3], font=('Arial bold', 20))
+    canvas.create_text(325, 120, text="00", font=('Arial', 20))
+    canvas.create_text(360, 120, text="01", font=('Arial', 20))
+
+    canvas.create_text(395, 120, text="11", font=('Arial', 20))
+    canvas.create_text(430, 120, text="10", font=('Arial', 20))
+
+    canvas.create_text(300, 165, text="00", font=('Arial', 20), angle=90)
+    canvas.create_text(300, 215, text="01", font=('Arial', 20), angle=90)
+    canvas.create_text(300, 265, text="11", font=('Arial', 20), angle=90)
+    canvas.create_text(300, 315, text="10", font=('Arial', 20), angle=90)
 else:
     print("> 4 variables")
     messagebox.showerror("Error", "Error: Expressions with more than 4 variables are not supported at this time. Please choose another file to load.")
