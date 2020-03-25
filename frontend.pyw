@@ -141,11 +141,44 @@ canvas.create_text(100, 420, text="Upper-Left Coordinates:", font=('Arial', 12))
 canvas.create_text(300, 420, text="Lower-Right Coordinates:", font=('Arial', 12))
 canvas.create_text(34, 450, text="X=", font=('Arial', 10))
 canvas.create_text(110, 450, text="Y=", font=('Arial', 10))
+canvas.create_text(230, 450, text="X=", font=('Arial', 10))
+canvas.create_text(310, 450, text="Y=", font=('Arial', 10))
 create_grouping_ul_x = tk.Entry(canvas, width=6)
 create_grouping_ul_y = tk.Entry(canvas, width=6)
-create_grouping_lr_x = tk.Entry(canvas, width=10)
-create_grouping_lr_y = tk.Entry(canvas, width=10)
+create_grouping_lr_x = tk.Entry(canvas, width=6)
+create_grouping_lr_y = tk.Entry(canvas, width=6)
 create_grouping_ul_x.place(relx=.06, rely=.82, anchor=SW)
 create_grouping_ul_y.place(relx=.16, rely=.82, anchor=SW)
+create_grouping_lr_x.place(relx=.305, rely=.82, anchor=SW)
+create_grouping_lr_y.place(relx=.405, rely=.82, anchor=SW)
+
+submitGrouping = Button(root, text="Create Grouping", command=notImplemented)
+submitGrouping.place(relx=.19, rely=.81)
+
+canvas.create_text(540, 420, text="Grouping 1:", font=('Arial', 12))
+canvas.create_text(540, 450, text="Grouping 2:", font=('Arial', 12))
+
+choices1 = {'Red', 'Pink', 'Orange', 'Yellow', 'Light Green', 'Dark Green', 'Blue', 'Purple'}
+var1 = tk.StringVar()
+var1.set('Select')
+popupMenu1 = tk.OptionMenu(canvas, var1, *choices1)
+popupMenu1.place(relx=.74, rely=0.72)
+
+choices2 = {'Red', 'Pink', 'Orange', 'Yellow', 'Light Green', 'Dark Green', 'Blue', 'Purple'}
+var2 = tk.StringVar()
+var2.set('Select')
+popupMenu2 = tk.OptionMenu(canvas, var2, *choices2)
+popupMenu2.place(relx=.74, rely=0.775)
+submitMerge = Button(root, text="Merge Groupings", command=notImplemented)
+submitMerge.place(relx=.67, rely=.81)
+
+
+canvas.create_text(100, 530, text="Final Answer: ", font=('Arial', 20))
+answer = Text(canvas, width=36, height=1, font=("Arial", 20))
+answer.place(relx=.57, rely=.976, anchor=S)
+
+wum = Button(canvas, text='''Check
+Answer''', font=('Arial', 11), command=notImplemented)
+wum.place(relx=.955, rely=.985, anchor=S)
 #Keep Program Alive
 tk.mainloop()
