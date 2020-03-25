@@ -56,7 +56,6 @@ filemenu.add_command(label="Open", command=open)
 filemenu.add_command(label="Save", command=notImplemented)
 helpmenu = tk.Menu(menu)
 menu.add_cascade(label="Help", menu=helpmenu)
-helpmenu.add_command(label="Instructions", command=notImplemented)
 helpmenu.add_command(label="Credits", command=credits)
 
 canvas = Canvas(root, width=800, height=600, bd=0, highlightthickness=0)
@@ -180,5 +179,28 @@ answer.place(relx=.57, rely=.976, anchor=S)
 wum = Button(canvas, text='''Check
 Answer''', font=('Arial', 11), command=notImplemented)
 wum.place(relx=.955, rely=.985, anchor=S)
+
+
+canvas.create_text(120, 230, text='''Use Create Grouping to create 
+a rectangular grouping. 
+
+To define a grouping, specify 
+the upper-left and lower-right 
+coordinates of the grouping on 
+the K-Map. The upper-left corner 
+is (0, 0). 
+
+To create non-rectangular groupings, 
+create multiple groupings and 
+merge them using Merge Groupings.''', font=('Arial', 10))
+
+canvas.create_text(660, 230, text='''Once all the groupings are constructed, 
+use them to simplify the expression; 
+enter your final answer under Final Answer 
+and click Check Answer to verify if 
+you are correct.''', font=('Arial', 10))
+
+
+
 #Keep Program Alive
 tk.mainloop()
