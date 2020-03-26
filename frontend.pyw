@@ -4,6 +4,8 @@ from tkinter.filedialog import askopenfilename as askopenfilename
 import sys
 import backend
 from tkinter import *
+from functools import partial
+
 
 #Function For Changing Text in Statusbar (Bottom of Program)
 #Arguments: x = New Text To Put In Statusbar.
@@ -65,7 +67,7 @@ currentKMap, variables, original = backend.main()
 canvas.create_text(400, 15, text="Expression: " + str(original), font=('Arial', 18))
 
 
-
+    
 w = Text(canvas, width=2*(currentKMap.columns)-1, height=currentKMap.rows, font=("Arial", 32))
 for x in range(0, currentKMap.rows):
     for y in range(0, currentKMap.columns):
@@ -75,10 +77,37 @@ for x in range(0, currentKMap.rows):
             w.insert(END, str(currentKMap.matrix[x][y]))
     w.insert(END, '\n')
 w.insert(END, '\n')
-
 w.config(state=DISABLED)
 
 
+def redrawKmap():
+    w.tag_add("all", "1.0", currentKmap.rows+"."+currentKmap.columns-1)
+    w.tag_config("all", background="white", foreground="black")
+    groupings = currentKMap.getGroupings()
+    colors = ['red', 'pink', 'orange', 'yellow', 'light green', 'dark green', 'blue', 'purple']
+    color = 0
+    for grouping in groupings:
+        thisgrouping = []
+        if str(grouping[0])[0] == '(':
+            # Nested, this grouping is actually two merged groupings
+            thisgrouping.add(grouping[0])
+            thisgrouping.add(grouping[1])
+        else:
+            # This is just one normal rectangular grouping
+            thisgrouping.add(grouping)
+        color = colors[0]
+        color = color + 1
+        for rectangle in thisgrouping:
+            x1 = rectangle[0][0]
+            y1 = rectangle[0][1]+1
+            x2 = rectangle[1][0]
+            y2 = rectangle[1][1]+1
+        w.tag_add(str(x1+','+y1+','+x2+','+y2), x1+'.'+y1, x2+'.'+y2)
+        w.tag_config(str(x1+','+y1+','+x2+','+y2), background=color, foreground="white")
+
+def createGrouping(x1, y1, x2, y2):
+    currentKMap.addGrouping((int(x1.get()),int(y1.get())),(int(x2.get()),int(y2.get())))
+    redrawKmap()
 
 numVars = len(variables)
 w.place(relx=.5, rely=.25, anchor=N)
@@ -151,19 +180,19 @@ create_grouping_ul_y.place(relx=.16, rely=.82, anchor=SW)
 create_grouping_lr_x.place(relx=.305, rely=.82, anchor=SW)
 create_grouping_lr_y.place(relx=.405, rely=.82, anchor=SW)
 
-submitGrouping = Button(root, text="Create Grouping", command=notImplemented)
+submitGrouping = Button(root, text="Create Grouping", command=partial(createGrouping, create_grouping_ul_x, create_grouping_ul_y, create_grouping_lr_x, create_grouping_lr_y))
 submitGrouping.place(relx=.19, rely=.81)
 
 canvas.create_text(540, 420, text="Grouping 1:", font=('Arial', 12))
 canvas.create_text(540, 450, text="Grouping 2:", font=('Arial', 12))
 
-choices1 = {'Red', 'Pink', 'Orange', 'Yellow', 'Light Green', 'Dark Green', 'Blue', 'Purple'}
+choices1 = ['Red', 'Pink', 'Orange', 'Yellow', 'Light Green', 'Dark Green', 'Blue', 'Purple']
 var1 = tk.StringVar()
 var1.set('Select')
 popupMenu1 = tk.OptionMenu(canvas, var1, *choices1)
 popupMenu1.place(relx=.74, rely=0.72)
 
-choices2 = {'Red', 'Pink', 'Orange', 'Yellow', 'Light Green', 'Dark Green', 'Blue', 'Purple'}
+choices2 = ['Red', 'Pink', 'Orange', 'Yellow', 'Light Green', 'Dark Green', 'Blue', 'Purple']
 var2 = tk.StringVar()
 var2.set('Select')
 popupMenu2 = tk.OptionMenu(canvas, var2, *choices2)
@@ -194,13 +223,18 @@ To create non-rectangular groupings,
 create multiple groupings and 
 merge them using Merge Groupings.''', font=('Arial', 10))
 
-canvas.create_text(660, 230, text='''Once all the groupings are constructed, 
+canvas.create_text(650, 170, text='''Once all the groupings are constructed, 
 use them to simplify the expression; 
 enter your final answer under Final Answer 
 and click Check Answer to verify if 
 you are correct.''', font=('Arial', 10))
 
-
+canvas.create_text(640, 270, text='''Syntax:
+NOT: ~
+AND: ^
+OR: |
+IF: ->
+IFF: <->.''', font=('Arial', 10))
 
 #Keep Program Alive
 tk.mainloop()

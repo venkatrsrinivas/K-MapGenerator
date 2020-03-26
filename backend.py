@@ -160,177 +160,182 @@ def buildExpressionTreeData(inputNormalForm):
 
 # Log base 2 
 def Log2(x):
- 	return (math.log10(x)/math.log10(2))
+	return (math.log10(x)/math.log10(2))
 
 # Function to check 
 # if x is power of 2 
 def isPowerOfTwo(n): 
- 	return (math.ceil(Log2(n)) == math.floor(Log2(n)))
+	return (math.ceil(Log2(n)) == math.floor(Log2(n)))
 
 class KarnaughMap():
- 	#Constructor For KarnaughMap
- 	def __init__(self, allExpressionVariables):
- 		self.allExpressionVariables = allExpressionVariables;
- 		self.totalNumVariables = len(allExpressionVariables);
- 		self.xTotalBits = math.floor(self.totalNumVariables/2);
- 		self.yTotalBits = math.ceil(self.totalNumVariables/2);
- 		self.rows = pow(2, self.xTotalBits);
- 		self.columns = pow(2, self.yTotalBits);
- 		self.matrix = [[0 for m in range(self.columns)] for k in range(self.rows)];
- 		# groupings will be represented as a list of tuples where we have the coordinates of the top left nad bottom right
- 		self.groupings = [] 
+	#Constructor For KarnaughMap
+	def __init__(self, allExpressionVariables):
+		self.allExpressionVariables = allExpressionVariables;
+		self.totalNumVariables = len(allExpressionVariables);
+		self.xTotalBits = math.floor(self.totalNumVariables/2);
+		self.yTotalBits = math.ceil(self.totalNumVariables/2);
+		self.rows = pow(2, self.xTotalBits);
+		self.columns = pow(2, self.yTotalBits);
+		self.matrix = [[0 for m in range(self.columns)] for k in range(self.rows)];
+		# groupings will be represented as a list of tuples where we have the coordinates of the top left nad bottom right
+		self.groupings = [] 
 
- 	def setOneValues(self, allOneValues):
- 		for currentOneValue in allOneValues:
- 			currentX, currentY = currentOneValue[self.yTotalBits:], currentOneValue[0:self.yTotalBits];
- 			xIndex, yIndex = self.strToIndex(currentX), self.strToIndex(currentY);
- 			#print(xIndex, " ", yIndex);
- 			self.matrix[xIndex][yIndex] = 1;
+	def setOneValues(self, allOneValues):
+		for currentOneValue in allOneValues:
+			currentX, currentY = currentOneValue[self.yTotalBits:], currentOneValue[0:self.yTotalBits];
+			xIndex, yIndex = self.strToIndex(currentX), self.strToIndex(currentY);
+			#print(xIndex, " ", yIndex);
+			self.matrix[xIndex][yIndex] = 1;
 
- 	#Note: Needs To Be Rewritten To Account For Only Changing One Bit
- 	#That is, for >= 5 variables!
- 	def strToIndex(self, input):
- 		if(len(input) == 0):
- 			return 0;
- 		if(len(input) == 1):
- 			return int(input);
- 		allTwoVariableData = ["00","01","11","10"]
- 		return allTwoVariableData.index(input)
- 		# resultIndex = 0;
- 		# tempInput = input;
- 		# currentExponent = len(tempInput)-1;
- 		# while(len(tempInput) != 0):
- 		# 	currentValue = int(tempInput[0]);
- 		# 	resultIndex += (currentValue*pow(2, currentExponent));
- 		# 	tempInput = tempInput[1:];
- 		# 	currentExponent -= 1;
- 		# return resultIndex; 
+	#Note: Needs To Be Rewritten To Account For Only Changing One Bit
+	#That is, for >= 5 variables!
+	def strToIndex(self, input):
+		if(len(input) == 0):
+			return 0;
+		if(len(input) == 1):
+			return int(input);
+		allTwoVariableData = ["00","01","11","10"]
+		return allTwoVariableData.index(input)
+		# resultIndex = 0;
+		# tempInput = input;
+		# currentExponent = len(tempInput)-1;
+		# while(len(tempInput) != 0):
+		# 	currentValue = int(tempInput[0]);
+		# 	resultIndex += (currentValue*pow(2, currentExponent));
+		# 	tempInput = tempInput[1:];
+		# 	currentExponent -= 1;
+		# return resultIndex; 
 
- 	def addNormGrouping(self, topLeft, bottomRight):
- 		# Takes in the coordinates and determines if the values
- 		# in the grouping is valid
- 		# Returns True for good and False for bad
- 		x1,y1 = topLeft
- 		x2,y2 = bottomRight
- 		val = 1
- 		good = True
- 		for k in range(x1, x2+1):
- 			for m in range(y1, y2+1):
- 				if not val == self.matrix[k][m]:
- 	 	 	 	 	good = False
- 	 	 	 	 	break
- 			if not good:
- 				break
- 		if not good:
- 			print("Bad grouping: there is a zero in this grouping\n")
- 		return good
+	def addNormGrouping(self, topLeft, bottomRight):
+		# Takes in the coordinates and determines if the values
+		# in the grouping is valid
+		# Returns True for good and False for bad
+		x1,y1 = topLeft
+		x2,y2 = bottomRight
+		val = 1
+		good = True
+		for k in range(x1, x2+1):
+			for m in range(y1, y2+1):
+				if not val == self.matrix[k][m]:
+					good = False
+					break
+			if not good:
+				break
+		if not good:
+			print("Bad grouping: there is a zero in this grouping\n")
+		return good
 
- 	def addWrapUpGrouping(self, topLeft, bottomRight):
- 		# this is the case when BottomRight is Above Top Left
- 		# splits the grouping and determines validity of each half
- 		x1,y1 = topLeft
- 		x2,y2 = bottomRight
- 		val = 1
- 		good = True
- 		L2 = (0, y1)
- 		R2 = (self.rows - 1, y2)
- 		numberOfBoxes = (x2 + 1 - 0)*(y2 + 1 - y1) + (x2 + 1 - x1)*(self.columns - y1)
- 		# groupings must be a power of 2
-	 	if not isPowerOfTwo(numberOfBoxes):
- 	 	 	print("Bad grouping: Number of Boxes is not a power of two")
- 	 	 	return False
- 		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
+	def addWrapUpGrouping(self, topLeft, bottomRight):
+		# this is the case when BottomRight is Above Top Left
+		# splits the grouping and determines validity of each half
+		x1,y1 = topLeft
+		x2,y2 = bottomRight
+		val = 1
+		good = True
+		L2 = (0, y1)
+		R2 = (self.rows - 1, y2)
+		numberOfBoxes = (x2 + 1 - 0)*(y2 + 1 - y1) + (x2 + 1 - x1)*(self.columns - y1)
+		# groupings must be a power of 2
+		if not isPowerOfTwo(numberOfBoxes):
+			print("Bad grouping: Number of Boxes is not a power of two")
+			return False
+		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
 
- 	def addWrapAcrossGrouping(self, topLeft, bottomRight):
- 		# This is the case when Top Left is to the right of Bottom Right
- 		x1,y1 = topLeft
- 		x2,y2 = bottomRight
- 		val = 1
- 		good = True
- 		L2 = (x1, 0)
- 		R2 = (x2, self.columns - 1)
- 		numberOfBoxes = (x2 + 1 - 0)*(y2 + 1 - y1) + (x2 + 1 - x1)*(self.columns - y1)
- 		# groupings must be a power of 2
-	 	if not isPowerOfTwo(numberOfBoxes):
- 	 	 	print("Bad grouping: Number of Boxes is not a power of two")
- 	 	 	return False
- 		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
+	def addWrapAcrossGrouping(self, topLeft, bottomRight):
+		# This is the case when Top Left is to the right of Bottom Right
+		x1,y1 = topLeft
+		x2,y2 = bottomRight
+		val = 1
+		good = True
+		L2 = (x1, 0)
+		R2 = (x2, self.columns - 1)
+		numberOfBoxes = (x2 + 1 - 0)*(y2 + 1 - y1) + (x2 + 1 - x1)*(self.columns - y1)
+		# groupings must be a power of 2
+		if not isPowerOfTwo(numberOfBoxes):
+			print("Bad grouping: Number of Boxes is not a power of two")
+			return False
+		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
 
- 	def addGrouping(self, topLeft, bottomRight):
- 		x1,y1 = topLeft
- 		x2,y2 = bottomRight
- 		valid = True
- 		if x1 <= x2 and y1 <= y2:
- 			numberOfBoxes = (x2 + 1 - x1)*(y2 + 1 - y1)
- 			if not isPowerOfTwo(numberOfBoxes):
-	 			print("Bad grouping: Number of Boxes is not a power of two")
-			 	valid = False
-			 	return
- 			valid = self.addNormGrouping(topLeft, bottomRight)
- 		elif x1 > x2 and y1 <= y2:
- 			valid = self.addUpGrouping(topLeft, bottomRight)
- 		elif x1 <= x2 and y1 > y2:
- 			valid = self.addAcrossGrouping(topLeft, bottomRight)
- 		else:
- 			# We can't have Top left be to right and below Bottom Right
- 			print("Invalid Grouping: groupings going around the sides cannot be diagonal")
- 			valid = False
- 		if valid:
- 	 	 	group = (topLeft, bottomRight)
- 	 	 	if group not in self.groupings:
- 	 	 	 	self.groupings.append(group)
+	def addGrouping(self, topLeft, bottomRight):
+		x1,y1 = topLeft
+		x2,y2 = bottomRight
+		valid = True
+		if x1 <= x2 and y1 <= y2:
+			numberOfBoxes = (x2 + 1 - x1)*(y2 + 1 - y1)
+			if not isPowerOfTwo(numberOfBoxes):
+				valid = False
+				return "Bad grouping: Number of Boxes is not a power of two"
+			valid = self.addNormGrouping(topLeft, bottomRight)
+		elif x1 > x2 and y1 <= y2:
+			valid = self.addUpGrouping(topLeft, bottomRight)
+		elif x1 <= x2 and y1 > y2:
+			valid = self.addAcrossGrouping(topLeft, bottomRight)
+		else:
+			# We can't have Top left be to right and below Bottom Right
+			return "Invalid Grouping: groupings going around the sides cannot be diagonal"
+			valid = False
+		if valid:
+			group = (topLeft, bottomRight)
+			if group not in self.groupings:
+				self.groupings.append(group)
+		return "Success"
 
- 	def removeGrouping(self, topLeft, bottomRight):
- 		x1,y1 = topLeft
- 		x2,y2 = bottomRight
- 		group = (topLeft, bottomRight)
- 		if group not in self.groupings:
- 			print("Grouping does not exist")
- 		else:
- 			self.groupings.remove(group)
+	def removeGrouping(self, topLeft, bottomRight):
+		x1,y1 = topLeft
+		x2,y2 = bottomRight
+		group = (topLeft, bottomRight)
+		if group not in self.groupings:
+			return "Grouping does not exist"
+		else:
+			self.groupings.remove(group)
+		return "Success"
 
- 	def combineGrouping(self, first, second):
- 		tl1, br1 = first
- 		tl2, br2 = second
- 		newGrouping = first
- 		if first in self.groupings and second in self.groupings:
- 			self.groupings.remove(first)
- 			self.groupings.remove(second)
- 			if first == second:
- 				print("Both groupings are the same")
- 			else:
-	 			firstX1, firstY1 = tl1
-	 			firstX2, firstY2 = br1
-	 			secondX1, secondY1 = tl2
-	 			secondX2, secondY2 = br2
-	 			if firstX1 == secondX1 and firstX2 == secondX2:
-	 				print("Horizontal Combine")
-	 				newGrouping = ((firstX1, max(firstY1, secondY1)), (firstX2, max(firstY2, secondY2)))
-	 			elif firstY1 == secondY1 and firstY2 == secondY2:
- 					print("Vertical Combine")
- 					newGrouping = ((max(firstX1, secondX1), firstY1), (max(firstX2, secondX2), firstY2))
- 				else:
- 					if firstX1 <= secondX1 and firstY1 <= secondY1 and firstX2 >= secondX2 and firstY2 >= secondY2:
- 						# First grouping contains second
- 						newGrouping = first
- 					elif firstX1 >= secondX1 and firstY1 >= secondY1 and firstX2 <= secondX2 and firstY2 <= secondY2:
- 						# second grouping contains first
- 						newGrouping = second
- 					else:
- 						print("Invalid Grouping")
-	 		self.addGrouping(newGrouping)
+	def combineGrouping(self, first, second):
+		tl1, br1 = first
+		tl2, br2 = second
+		newGrouping = first
+		if first in self.groupings and second in self.groupings:
+			self.groupings.remove(first)
+			self.groupings.remove(second)
+			if first == second:
+				return "Both groupings are the same"
+			else:
+				firstX1, firstY1 = tl1
+				firstX2, firstY2 = br1
+				secondX1, secondY1 = tl2
+				secondX2, secondY2 = br2
+				if firstX1 == secondX1 and firstX2 == secondX2:
+					print("Horizontal Combine")
+					newGrouping = ((firstX1, max(firstY1, secondY1)), (firstX2, max(firstY2, secondY2)))
+				elif firstY1 == secondY1 and firstY2 == secondY2:
+					print("Vertical Combine")
+					newGrouping = ((max(firstX1, secondX1), firstY1), (max(firstX2, secondX2), firstY2))
+				else:
+					if firstX1 <= secondX1 and firstY1 <= secondY1 and firstX2 >= secondX2 and firstY2 >= secondY2:
+						# First grouping contains second
+						newGrouping = first
+					elif firstX1 >= secondX1 and firstY1 >= secondY1 and firstX2 <= secondX2 and firstY2 <= secondY2:
+						# second grouping contains first
+						newGrouping = second
+					else:
+						return "Invalid Grouping"
+			self.addGrouping(newGrouping)
+		return "Success"
 
- 	def printGrouping(self):
- 		print(self.groupings)
+	def printGrouping(self):
+		print(self.groupings)
 
- 	def printMatrix(self):
- 		for k in range(0, self.rows):
- 			for m in range(0, self.columns):
- 				print(self.matrix[k][m], end = " ")
- 			print("");
+	def getGroupings(self):
+		return self.groupings
 
- 	def getMatrix(self):
- 		return self.matrix;
+	def printMatrix(self):
+		for k in range(0, self.rows):
+			for m in range(0, self.columns):
+				print(self.matrix[k][m], end = " ")
+			print("");
+
+	def getMatrix(self):
+		return self.matrix;
 
 def main(): 
 	#Load Boolean Expressions From Input .txt File:
