@@ -81,32 +81,42 @@ w.config(state=DISABLED)
 
 
 def redrawKmap():
-    w.tag_add("all", "1.0", currentKmap.rows+"."+currentKmap.columns-1)
+    w.tag_add("all", "1.0", str(currentKMap.rows)+"."+str(currentKMap.columns-1))
     w.tag_config("all", background="white", foreground="black")
     groupings = currentKMap.getGroupings()
     colors = ['red', 'pink', 'orange', 'yellow', 'light green', 'dark green', 'blue', 'purple']
     color = 0
     for grouping in groupings:
         thisgrouping = []
-        if str(grouping[0])[0] == '(':
+        if str(grouping[0][0])[0] == '(':
+            print("Nested grouping")
             # Nested, this grouping is actually two merged groupings
-            thisgrouping.add(grouping[0])
-            thisgrouping.add(grouping[1])
+            thisgrouping.append(grouping[0])
+            thisgrouping.append(grouping[1])
         else:
+            print("Non-nested grouping")
             # This is just one normal rectangular grouping
-            thisgrouping.add(grouping)
-        color = colors[0]
-        color = color + 1
+            thisgrouping.append(grouping)
         for rectangle in thisgrouping:
-            x1 = rectangle[0][0]
-            y1 = rectangle[0][1]+1
-            x2 = rectangle[1][0]
-            y2 = rectangle[1][1]+1
-        w.tag_add(str(x1+','+y1+','+x2+','+y2), x1+'.'+y1, x2+'.'+y2)
-        w.tag_config(str(x1+','+y1+','+x2+','+y2), background=color, foreground="white")
+            y1 = str(rectangle[0][0]+1)
+            x1 = str(rectangle[0][1]*2)
+            y2 = str(rectangle[1][0]+1)
+            x2 = str(rectangle[1][1]*2+1)
+            print("x1:"+x1)
+            print("y1:"+y1)
+            print("x2:"+x2)
+            print("y2:"+y2)
+            for y in range(int(y1), int(y2)+1):
+                w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
+                w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
+        color = color + 1
 
 def createGrouping(x1, y1, x2, y2):
-    currentKMap.addGrouping((int(x1.get()),int(y1.get())),(int(x2.get()),int(y2.get())))
+    try:
+        result = currentKMap.addGrouping((int(y1.get()),int(x1.get())),(int(y2.get()),int(x2.get())))
+    except Exception as e:
+        messagebox.showerror("Error", e)
+        return
     redrawKmap()
 
 numVars = len(variables)

@@ -222,7 +222,7 @@ class KarnaughMap():
 			if not good:
 				break
 		if not good:
-			print("Bad grouping: there is a zero in this grouping\n")
+			raise Exception("Bad grouping: there is a zero in this grouping")
 		return good
 
 	def addWrapUpGrouping(self, topLeft, bottomRight):
@@ -237,7 +237,7 @@ class KarnaughMap():
 		numberOfBoxes = (x2 + 1 - 0)*(y2 + 1 - y1) + (x2 + 1 - x1)*(self.columns - y1)
 		# groupings must be a power of 2
 		if not isPowerOfTwo(numberOfBoxes):
-			print("Bad grouping: Number of Boxes is not a power of two")
+			raise Exception("Bad grouping: Number of Boxes is not a power of two")
 			return False
 		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
 
@@ -252,8 +252,7 @@ class KarnaughMap():
 		numberOfBoxes = (x2 + 1 - 0)*(y2 + 1 - y1) + (x2 + 1 - x1)*(self.columns - y1)
 		# groupings must be a power of 2
 		if not isPowerOfTwo(numberOfBoxes):
-			print("Bad grouping: Number of Boxes is not a power of two")
-			return False
+			raise Exception("Bad grouping: Number of Boxes is not a power of two")
 		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
 
 	def addGrouping(self, topLeft, bottomRight):
@@ -264,15 +263,15 @@ class KarnaughMap():
 			numberOfBoxes = (x2 + 1 - x1)*(y2 + 1 - y1)
 			if not isPowerOfTwo(numberOfBoxes):
 				valid = False
-				return "Bad grouping: Number of Boxes is not a power of two"
+				raise Exception("Bad grouping: Number of Boxes is not a power of two")
 			valid = self.addNormGrouping(topLeft, bottomRight)
 		elif x1 > x2 and y1 <= y2:
-			valid = self.addUpGrouping(topLeft, bottomRight)
+			valid = self.addWrapUpGrouping(topLeft, bottomRight)
 		elif x1 <= x2 and y1 > y2:
-			valid = self.addAcrossGrouping(topLeft, bottomRight)
+			valid = self.addWrapAcrossGrouping(topLeft, bottomRight)
 		else:
 			# We can't have Top left be to right and below Bottom Right
-			return "Invalid Grouping: groupings going around the sides cannot be diagonal"
+			raise Exception("Invalid Grouping: groupings going around the sides cannot be diagonal")
 			valid = False
 		if valid:
 			group = (topLeft, bottomRight)
@@ -285,7 +284,7 @@ class KarnaughMap():
 		x2,y2 = bottomRight
 		group = (topLeft, bottomRight)
 		if group not in self.groupings:
-			return "Grouping does not exist"
+			raise Exception("Grouping does not exist")
 		else:
 			self.groupings.remove(group)
 		return "Success"
@@ -298,7 +297,7 @@ class KarnaughMap():
 			self.groupings.remove(first)
 			self.groupings.remove(second)
 			if first == second:
-				return "Both groupings are the same"
+				raise Exception("Both groupings are the same")
 			else:
 				firstX1, firstY1 = tl1
 				firstX2, firstY2 = br1
@@ -318,7 +317,7 @@ class KarnaughMap():
 						# second grouping contains first
 						newGrouping = second
 					else:
-						return "Invalid Grouping"
+						raise Exception("Invalid Grouping")
 			self.addGrouping(newGrouping)
 		return "Success"
 
