@@ -86,7 +86,7 @@ def redrawKmap():
     w.tag_add("all", "1.0", str(currentKMap.rows)+"."+str(currentKMap.columns-1))
     w.tag_config("all", background="white", foreground="black")
     groupings = currentKMap.getGroupings()
-    colors = ['red', 'pink', 'orange', 'yellow', 'light green', 'dark green', 'blue', 'purple']
+    colors = ['Red', 'Pink', 'Orange', 'Yellow', 'Light Green', 'Dark Green', 'Blue', 'Purple']
     color = 0
     groupingsmap.clear()
     for grouping in groupings:
@@ -112,10 +112,10 @@ def redrawKmap():
             print("x2:"+x2)
             print("y2:"+y2)
             if y2 < y1:
-                for x in range(y1, currentKMap.columns*2+1):
+                for y in range(int(y1), int(currentKMap.columns*2+1)):
                     w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
                     w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
-                for x in range(0, y2+1):
+                for y in range(0, int(int(y2)+1)):
                     w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
                     w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
             else:
@@ -229,7 +229,22 @@ var2 = tk.StringVar()
 var2.set('Select')
 popupMenu2 = tk.OptionMenu(canvas, var2, *choices2)
 popupMenu2.place(relx=.74, rely=0.775)
-submitMerge = Button(root, text="Merge Groupings", command=notImplemented)
+
+
+def merge(first, second):
+    one = groupingsmap[first.get()]
+    two = groupingsmap[second.get()]
+    try:
+        currentKMap.combineGrouping(one, two)
+    except Exception as e:
+        messagebox.showerror("Error", "Error: " + str(e) + "\n\nMore details for developers: " + str(format_exc()))
+        return
+    redrawKmap()
+    
+
+
+
+submitMerge = Button(root, text="Merge Groupings", command=partial(merge, var1, var2))
 submitMerge.place(relx=.67, rely=.81)
 
 

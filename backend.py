@@ -294,8 +294,6 @@ class KarnaughMap():
 		tl2, br2 = second
 		newGrouping = first
 		if first in self.groupings and second in self.groupings:
-			self.groupings.remove(first)
-			self.groupings.remove(second)
 			if first == second:
 				raise Exception("Both groupings are the same")
 			else:
@@ -303,22 +301,40 @@ class KarnaughMap():
 				firstX2, firstY2 = br1
 				secondX1, secondY1 = tl2
 				secondX2, secondY2 = br2
-				if firstX1 == secondX1 and firstX2 == secondX2:
+				if firstX1 == secondX1 and firstX2 == secondX2 and abs(firstY1-secondY1) <= 1 and abs(firstY2-secondY2) <= 1:
 					print("Horizontal Combine")
 					newGrouping = ((firstX1, max(firstY1, secondY1)), (firstX2, max(firstY2, secondY2)))
-				elif firstY1 == secondY1 and firstY2 == secondY2:
+					self.groupings.remove(first)
+					self.groupings.remove(second)
+				elif firstX1 == secondX1 and firstX2 == secondX2 and ((secondY2 == self.columns-1 and firstY1 == 0) or (firstY2 == self.columns-1 and secondY1 == 0)):
+					print("Horizontal Combine with Wraparound")
+					newGrouping = ((firstX1, max(firstY1, secondY1)), (firstX2, min(firstY2, secondY2)))
+					self.groupings.remove(first)
+					self.groupings.remove(second)
+				elif firstY1 == secondY1 and firstY2 == secondY2 and abs(firstX1-secondX1) <= 1 and abs(firstX2-secondX2) <= 1:
 					print("Vertical Combine")
 					newGrouping = ((max(firstX1, secondX1), firstY1), (max(firstX2, secondX2), firstY2))
+					self.groupings.remove(first)
+					self.groupings.remove(second)
+				elif firstY1 == secondY1 and firstY2 == secondY2 and ((secondX2 == self.rows-1 and firstX1 == 0) or (firstX2 == self.rows-1 and secondX1 == 0)):
+					print("Vertical Combine with Wraparound")
+					newGrouping = ((max(firstX1, secondX1), firstY1), (min(firstX2, secondX2), firstY2))
+					self.groupings.remove(first)
+					self.groupings.remove(second)
 				else:
 					if firstX1 <= secondX1 and firstY1 <= secondY1 and firstX2 >= secondX2 and firstY2 >= secondY2:
-						# First grouping contains second
+						print("First grouping contains second")
 						newGrouping = first
+						self.groupings.remove(second)
 					elif firstX1 >= secondX1 and firstY1 >= secondY1 and firstX2 <= secondX2 and firstY2 <= secondY2:
-						# second grouping contains first
+						print("Second grouping contains first")
 						newGrouping = second
+						self.groupings.remove(first)
 					else:
 						raise Exception("Invalid Grouping")
-			self.addGrouping(newGrouping)
+			print("Merging into new grouping: " + str(newGrouping))
+			
+			self.addGrouping(newGrouping[0], newGrouping[1])
 		return "Success"
 
 	def printGrouping(self):
