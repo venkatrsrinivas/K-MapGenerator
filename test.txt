@@ -1,1 +1,1 @@
-iff(and(not(P), Q), and(R, S))
+iff(and(not(P),Q),and(R,S))

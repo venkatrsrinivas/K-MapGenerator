@@ -5,7 +5,7 @@ import sys
 import backend
 from tkinter import *
 from functools import partial
-
+from traceback import format_exc
 
 #Function For Changing Text in Statusbar (Bottom of Program)
 #Arguments: x = New Text To Put In Statusbar.
@@ -65,8 +65,6 @@ canvas.pack()
 
 currentKMap, variables, original = backend.main()
 canvas.create_text(400, 15, text="Expression: " + str(original), font=('Arial', 18))
-
-
     
 w = Text(canvas, width=2*(currentKMap.columns)-1, height=currentKMap.rows, font=("Arial", 32))
 for x in range(0, currentKMap.rows):
@@ -79,14 +77,21 @@ for x in range(0, currentKMap.rows):
 w.insert(END, '\n')
 w.config(state=DISABLED)
 
+groupingsmap = {}
+
+grouping_text_id = None
 
 def redrawKmap():
+    grouping_list = "Groupings:\n"
     w.tag_add("all", "1.0", str(currentKMap.rows)+"."+str(currentKMap.columns-1))
     w.tag_config("all", background="white", foreground="black")
     groupings = currentKMap.getGroupings()
     colors = ['red', 'pink', 'orange', 'yellow', 'light green', 'dark green', 'blue', 'purple']
     color = 0
+    groupingsmap.clear()
     for grouping in groupings:
+        grouping_list = grouping_list + str(grouping) + "\n"
+        groupingsmap[colors[color]] = grouping
         thisgrouping = []
         if str(grouping[0][0])[0] == '(':
             print("Nested grouping")
@@ -106,16 +111,33 @@ def redrawKmap():
             print("y1:"+y1)
             print("x2:"+x2)
             print("y2:"+y2)
-            for y in range(int(y1), int(y2)+1):
-                w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
-                w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
+            if y2 < y1:
+                for x in range(y1, currentKMap.columns*2+1):
+                    w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
+                    w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
+                for x in range(0, y2+1):
+                    w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
+                    w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
+            else:
+                for y in range(int(y1), int(y2)+1):
+                    if x2 < x1:
+                        # Highlight from x1 to the end
+                        w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+ str(currentKMap.columns*2)), str(str(y)+'.'+x1),str(str(y)+'.'+str(currentKMap.columns*2)))
+                        w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+ str(currentKMap.columns*2)), background=colors[color], foreground="white")
+                        # Highlight from 0 to x2
+                        w.tag_add(str(str(y)+'.'+ str(0) +'.'+str(y)+'.'+ x2), str(str(y)+'.'+str(0)),str(str(y)+'.'+x2))
+                        w.tag_config(str(str(y)+'.'+str(0)+'.'+str(y)+'.'+ x2), background=colors[color], foreground="white")
+                    else:
+                        w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
+                        w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
         color = color + 1
+    canvas.itemconfig(grouping_text_id, text=grouping_list)
 
 def createGrouping(x1, y1, x2, y2):
     try:
         result = currentKMap.addGrouping((int(y1.get()),int(x1.get())),(int(y2.get()),int(x2.get())))
     except Exception as e:
-        messagebox.showerror("Error", e)
+        messagebox.showerror("Error", "Error: " + str(e) + "\n\nMore details for developers: " + str(format_exc()))
         return
     redrawKmap()
 
@@ -177,18 +199,18 @@ canvas.create_line(80, 400, 330, 400)
 canvas.create_line(475, 400, 725, 400)
 canvas.create_text(100, 420, text="Upper-Left Coordinates:", font=('Arial', 12))
 canvas.create_text(300, 420, text="Lower-Right Coordinates:", font=('Arial', 12))
-canvas.create_text(34, 450, text="X=", font=('Arial', 10))
-canvas.create_text(110, 450, text="Y=", font=('Arial', 10))
-canvas.create_text(230, 450, text="X=", font=('Arial', 10))
-canvas.create_text(310, 450, text="Y=", font=('Arial', 10))
-create_grouping_ul_x = tk.Entry(canvas, width=6)
+canvas.create_text(34, 450, text="Y=", font=('Arial', 10))
+canvas.create_text(110, 450, text="X=", font=('Arial', 10))
+canvas.create_text(230, 450, text="Y=", font=('Arial', 10))
+canvas.create_text(310, 450, text="X=", font=('Arial', 10))
 create_grouping_ul_y = tk.Entry(canvas, width=6)
-create_grouping_lr_x = tk.Entry(canvas, width=6)
+create_grouping_ul_x = tk.Entry(canvas, width=6)
 create_grouping_lr_y = tk.Entry(canvas, width=6)
-create_grouping_ul_x.place(relx=.06, rely=.82, anchor=SW)
-create_grouping_ul_y.place(relx=.16, rely=.82, anchor=SW)
-create_grouping_lr_x.place(relx=.305, rely=.82, anchor=SW)
-create_grouping_lr_y.place(relx=.405, rely=.82, anchor=SW)
+create_grouping_lr_x = tk.Entry(canvas, width=6)
+create_grouping_ul_y.place(relx=.06, rely=.82, anchor=SW)
+create_grouping_ul_x.place(relx=.16, rely=.82, anchor=SW)
+create_grouping_lr_y.place(relx=.305, rely=.82, anchor=SW)
+create_grouping_lr_x.place(relx=.405, rely=.82, anchor=SW)
 
 submitGrouping = Button(root, text="Create Grouping", command=partial(createGrouping, create_grouping_ul_x, create_grouping_ul_y, create_grouping_lr_x, create_grouping_lr_y))
 submitGrouping.place(relx=.19, rely=.81)
@@ -220,31 +242,16 @@ Answer''', font=('Arial', 11), command=notImplemented)
 wum.place(relx=.955, rely=.985, anchor=S)
 
 
-canvas.create_text(120, 230, text='''Use Create Grouping to create 
-a rectangular grouping. 
+def instructions():
+    messagebox.showinfo("Instructions", "Use Create Grouping to create a rectangular grouping. \n\nTo define a grouping, specify the upper-left and lower-right coordinates of the grouping on the K-Map. The upper-left corner is (0, 0). \n\nTo create non-rectangular groupings, create multiple groupings and merge them using Merge Groupings. \n\nOnce all the groupings are constructed, use them to simplify the expression; enter your final answer under Final Answer and click Check Answer to verify if you are correct.\n\nSyntax:\nNOT: ~\nAND: ^\nOR: |\nIF: ->\nIFF: <->.\nAll operators are either unary (not) or binary (and, or, if, iff) and there is no support for a generalized notation. This means that A & B & C will thrown an error, you must do A & (B & C).")
 
-To define a grouping, specify 
-the upper-left and lower-right 
-coordinates of the grouping on 
-the K-Map. The upper-left corner 
-is (0, 0). 
+submitMerge = Button(root, text="Instructions", command=instructions)
+submitMerge.place(relx=.15, rely=.35, anchor=W)
 
-To create non-rectangular groupings, 
-create multiple groupings and 
-merge them using Merge Groupings.''', font=('Arial', 10))
+grouping_text_id = canvas.create_text(630, 200, text="Groupings:", font=('Arial', 12))
 
-canvas.create_text(650, 170, text='''Once all the groupings are constructed, 
-use them to simplify the expression; 
-enter your final answer under Final Answer 
-and click Check Answer to verify if 
-you are correct.''', font=('Arial', 10))
 
-canvas.create_text(640, 270, text='''Syntax:
-NOT: ~
-AND: ^
-OR: |
-IF: ->
-IFF: <->.''', font=('Arial', 10))
+
 
 #Keep Program Alive
 tk.mainloop()
