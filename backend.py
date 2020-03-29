@@ -226,34 +226,35 @@ class KarnaughMap():
 		return good
 
 	def addWrapUpGrouping(self, topLeft, bottomRight):
-		# this is the case when BottomRight is Above Top Left
-		# splits the grouping and determines validity of each half
-		x1,y1 = topLeft
-		x2,y2 = bottomRight
-		val = 1
-		good = True
-		L2 = (0, y1)
-		R2 = (self.rows - 1, y2)
-		numberOfBoxes = (x2 + 1 - 0)*(y2 + 1 - y1) + (x2 + 1 - x1)*(self.columns - y1)
-		# groupings must be a power of 2
-		if not isPowerOfTwo(numberOfBoxes):
-			raise Exception("Bad grouping: Number of Boxes is not a power of two")
-			return False
-		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
+ 		# this is the case when BottomRight is Above Top Left
+ 		# splits the grouping and determines validity of each half
+ 		x1,y1 = topLeft
+ 		x2,y2 = bottomRight
+ 		val = 1
+ 		good = True
+ 		L2 = (0, y1)
+ 		R2 = (self.rows - 1, y2)
+ 		numberOfBoxes = (y2 + 1 - y1)*(x2 + 1) + (y2 + 1 - y1)*(self.rows - x1)
+ 		# groupings must be a power of 2
+	 	if not isPowerOfTwo(numberOfBoxes):
+ 	 	 	print("Bad grouping: Number of Boxes is not a power of two")
+ 	 	 	return False
+ 		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
 
 	def addWrapAcrossGrouping(self, topLeft, bottomRight):
-		# This is the case when Top Left is to the right of Bottom Right
-		x1,y1 = topLeft
-		x2,y2 = bottomRight
-		val = 1
-		good = True
-		L2 = (x1, 0)
-		R2 = (x2, self.columns - 1)
-		numberOfBoxes = (x2 + 1 - 0)*(y2 + 1 - y1) + (x2 + 1 - x1)*(self.columns - y1)
-		# groupings must be a power of 2
-		if not isPowerOfTwo(numberOfBoxes):
-			raise Exception("Bad grouping: Number of Boxes is not a power of two")
-		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
+ 	 	# This is the case when Top Left is to the right of Bottom Right
+ 		x1,y1 = topLeft
+ 		x2,y2 = bottomRight
+ 		val = 1
+ 		good = True
+ 		L2 = (x1, 0)
+ 		R2 = (x2, self.columns - 1)
+ 		numberOfBoxes = (y2 + 1)*(x2 + 1 - x1) + (self.columns - y1)*(x2 + 1 - x1)
+ 		# groupings must be a power of 2
+	 	if not isPowerOfTwo(numberOfBoxes):
+ 	 	 	print("Bad grouping: Number of Boxes is not a power of two")
+ 	 	 	return False
+ 		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
 
 	def addGrouping(self, topLeft, bottomRight):
 		x1,y1 = topLeft
@@ -369,6 +370,14 @@ def main():
 		currentKMap.printMatrix();
 		print("Done w/ Karnaugh Map.");
 		countLines += 1;
+
+		# Testing wrapup
+		topL = (3,2)
+		botR = (0,3)
+		currentKMap.addGrouping(topL, botR)
+		currentKMap.printGrouping()
+		currentKMap.removeGrouping(topL, botR)
+		currentKMap.printGrouping();
 
 		allKarnaughMaps.append(currentKMap);
 	return allKarnaughMaps[0], variables, outputFromHLDEquiv[5]
