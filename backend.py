@@ -260,6 +260,14 @@ class KarnaughMap():
 		x1,y1 = topLeft
 		x2,y2 = bottomRight
 		valid = True
+		if y1 > self.columns - 1 or y2 > self.columns - 1 or x1 > self.rows - 1 or x2 > self.rows - 1:
+ 			print("Indices are greater than bounds")
+ 			valid = False
+ 			return
+		if y1 < 0 or y2 < 0 or x1 < 0 or x2 < 0:
+ 			print("An index is less than zero")
+ 			valid = False
+ 			return
 		if x1 <= x2 and y1 <= y2:
 			numberOfBoxes = (x2 + 1 - x1)*(y2 + 1 - y1)
 			if not isPowerOfTwo(numberOfBoxes):
