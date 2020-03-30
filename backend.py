@@ -313,8 +313,7 @@ class KarnaughMap():
 				remove = []
 				if firstX1 == secondX1 and firstX2 == secondX2 and abs(firstY1-secondY1) <= 1 and abs(firstY2-secondY2) <= 1:
 					print("Horizontal Combine")
-					newGrouping = ((firstX1, max(firstY1, secondY1)), (firstX2, max(firstY2, secondY2)))
-					
+					newGrouping = ((firstX1, min(firstY1, secondY1)), (firstX2, max(firstY2, secondY2)))
 					remove.append(first)
 					remove.append(second)
 				elif firstX1 == secondX1 and firstX2 == secondX2 and ((secondY2 == self.columns-1 and firstY1 == 0) or (firstY2 == self.columns-1 and secondY1 == 0)):
@@ -324,7 +323,7 @@ class KarnaughMap():
 					remove.append(second)
 				elif firstY1 == secondY1 and firstY2 == secondY2 and abs(firstX1-secondX1) <= 1 and abs(firstX2-secondX2) <= 1:
 					print("Vertical Combine")
-					newGrouping = ((max(firstX1, secondX1), firstY1), (max(firstX2, secondX2), firstY2))
+					newGrouping = ((min(firstX1, secondX1), firstY1), (max(firstX2, secondX2), firstY2))
 					remove.append(first)
 					remove.append(second)
 				elif firstY1 == secondY1 and firstY2 == secondY2 and ((secondX2 == self.rows-1 and firstX1 == 0) or (firstX2 == self.rows-1 and secondX1 == 0)):
@@ -347,7 +346,7 @@ class KarnaughMap():
 
 			self.addGrouping(newGrouping[0], newGrouping[1])
 			for grouping in remove:
-				self.removeGrouping(grouping)
+				self.removeGrouping(grouping[0], grouping[1])
 		return "Success"
 
 	def printGrouping(self):
