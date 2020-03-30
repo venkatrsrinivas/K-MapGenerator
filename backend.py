@@ -237,7 +237,7 @@ class KarnaughMap():
  		numberOfBoxes = (y2 + 1 - y1)*(x2 + 1) + (y2 + 1 - y1)*(self.rows - x1)
  		# groupings must be a power of 2
 	 	if not isPowerOfTwo(numberOfBoxes):
- 	 	 	print("Bad grouping: Number of Boxes is not a power of two")
+ 	 	 	raise Exception("Bad grouping: Number of Boxes is not a power of two")
  	 	 	return False
  		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
 
@@ -252,7 +252,7 @@ class KarnaughMap():
  		numberOfBoxes = (y2 + 1)*(x2 + 1 - x1) + (self.columns - y1)*(x2 + 1 - x1)
  		# groupings must be a power of 2
 	 	if not isPowerOfTwo(numberOfBoxes):
- 	 	 	print("Bad grouping: Number of Boxes is not a power of two")
+ 	 	 	raise Exception("Bad grouping: Number of Boxes is not a power of two")
  	 	 	return False
  		return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
 
@@ -261,11 +261,11 @@ class KarnaughMap():
 		x2,y2 = bottomRight
 		valid = True
 		if y1 > self.columns - 1 or y2 > self.columns - 1 or x1 > self.rows - 1 or x2 > self.rows - 1:
- 			print("Indices are greater than bounds")
+ 			raise Exception("Indices are greater than bounds")
  			valid = False
  			return
 		if y1 < 0 or y2 < 0 or x1 < 0 or x2 < 0:
- 			print("An index is less than zero")
+ 			raise Exception("An index is less than zero")
  			valid = False
  			return
 		if x1 <= x2 and y1 <= y2:
@@ -310,40 +310,44 @@ class KarnaughMap():
 				firstX2, firstY2 = br1
 				secondX1, secondY1 = tl2
 				secondX2, secondY2 = br2
+				remove = []
 				if firstX1 == secondX1 and firstX2 == secondX2 and abs(firstY1-secondY1) <= 1 and abs(firstY2-secondY2) <= 1:
 					print("Horizontal Combine")
 					newGrouping = ((firstX1, max(firstY1, secondY1)), (firstX2, max(firstY2, secondY2)))
-					self.groupings.remove(first)
-					self.groupings.remove(second)
+					
+					remove.append(first)
+					remove.append(second)
 				elif firstX1 == secondX1 and firstX2 == secondX2 and ((secondY2 == self.columns-1 and firstY1 == 0) or (firstY2 == self.columns-1 and secondY1 == 0)):
 					print("Horizontal Combine with Wraparound")
 					newGrouping = ((firstX1, max(firstY1, secondY1)), (firstX2, min(firstY2, secondY2)))
-					self.groupings.remove(first)
-					self.groupings.remove(second)
+					remove.append(first)
+					remove.append(second)
 				elif firstY1 == secondY1 and firstY2 == secondY2 and abs(firstX1-secondX1) <= 1 and abs(firstX2-secondX2) <= 1:
 					print("Vertical Combine")
 					newGrouping = ((max(firstX1, secondX1), firstY1), (max(firstX2, secondX2), firstY2))
-					self.groupings.remove(first)
-					self.groupings.remove(second)
+					remove.append(first)
+					remove.append(second)
 				elif firstY1 == secondY1 and firstY2 == secondY2 and ((secondX2 == self.rows-1 and firstX1 == 0) or (firstX2 == self.rows-1 and secondX1 == 0)):
 					print("Vertical Combine with Wraparound")
 					newGrouping = ((max(firstX1, secondX1), firstY1), (min(firstX2, secondX2), firstY2))
-					self.groupings.remove(first)
-					self.groupings.remove(second)
+					remove.append(first)
+					remove.append(second)
 				else:
 					if firstX1 <= secondX1 and firstY1 <= secondY1 and firstX2 >= secondX2 and firstY2 >= secondY2:
 						print("First grouping contains second")
 						newGrouping = first
-						self.groupings.remove(second)
+						remove.append(second)
 					elif firstX1 >= secondX1 and firstY1 >= secondY1 and firstX2 <= secondX2 and firstY2 <= secondY2:
 						print("Second grouping contains first")
 						newGrouping = second
-						self.groupings.remove(first)
+						remove.append(first)
 					else:
 						raise Exception("Invalid Grouping")
 			print("Merging into new grouping: " + str(newGrouping))
-			
+
 			self.addGrouping(newGrouping[0], newGrouping[1])
+			for grouping in remove:
+				self.removeGrouping(grouping)
 		return "Success"
 
 	def printGrouping(self):
