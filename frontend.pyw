@@ -135,9 +135,10 @@ def redrawKmap():
 
 def createGrouping(x1, y1, x2, y2):
     try:
-        result = currentKMap.addGrouping((int(y1.get()),int(x1.get())),(int(y2.get()),int(x2.get())))
+        result = currentKMap.addGrouping((int(y1.get()),int(x1.get())),(int(y2.get()),int(x2.get())), True)
     except Exception as e:
-        messagebox.showerror("Error", "Error: " + str(e) + "\n\nMore details for developers: " + str(format_exc()))
+        messagebox.showerror("Error", "Error: " + str(e))
+        print(format_exc())
         return
     redrawKmap()
 
@@ -237,7 +238,8 @@ def merge(first, second):
     try:
         currentKMap.combineGrouping(one, two, True)
     except Exception as e:
-        messagebox.showerror("Error", "Error: " + str(e) + "\n\nMore details for developers: " + str(format_exc()))
+        messagebox.showerror("Error", "Error: " + str(e))
+        print(format_exc())
         return
     redrawKmap()
     
@@ -257,6 +259,8 @@ def check(kmap):
     result, msg = currentKMap.check()
     if not result:
         messagebox.showerror("Error", msg)
+    else:
+        messagebox.showinfo("Success!", "Your answer is correct.")
 
 wum = Button(canvas, text='''Check
 Answer''', font=('Arial', 11), command=partial(check, currentKMap))
