@@ -364,6 +364,27 @@ class KarnaughMap():
 	def getMatrix(self):
 		return self.matrix;
 
+	def check(self):
+		valid = True
+
+		# Check whether two groupings can be merged
+		for x in self.groupings:
+			for y in self.groupings:
+				if x is not y and valid:
+					try:
+						self.combineGrouping(x, y, False)
+					except:
+						continue
+					finally:
+						valid = False
+						return False, "Two or more groupings can be merged."
+		if valid:
+			print("Passed merge check")
+
+		# Verify that there are no ungrouped 1's
+
+		return True, ""
+
 def main(): 
 	#Load Boolean Expressions From Input .txt File:
 	if(len(sys.argv) < 2):

@@ -254,20 +254,9 @@ answer.place(relx=.57, rely=.976, anchor=S)
 
 
 def check(kmap):
-    valid = True
-    for x in kmap.groupings:
-        for y in kmap.groupings:
-            if x is not y and valid:
-                try:
-                    kmap.combineGrouping(x, y, False)
-                except:
-                    continue
-                finally:
-                    valid = False
-                    messagebox.showerror("Error", "Two or more adjacent groupings can be merged.")
-    if valid:
-        print("Passed merge check")
-    redrawKmap()
+    result, msg = currentKMap.check()
+    if not result:
+        messagebox.showerror("Error", msg)
 
 wum = Button(canvas, text='''Check
 Answer''', font=('Arial', 11), command=partial(check, currentKMap))
