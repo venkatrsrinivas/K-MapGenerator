@@ -235,7 +235,7 @@ def merge(first, second):
     one = groupingsmap[first.get()]
     two = groupingsmap[second.get()]
     try:
-        currentKMap.combineGrouping(one, two)
+        currentKMap.combineGrouping(one, two, True)
     except Exception as e:
         messagebox.showerror("Error", "Error: " + str(e) + "\n\nMore details for developers: " + str(format_exc()))
         return
@@ -252,8 +252,25 @@ canvas.create_text(100, 530, text="Final Answer: ", font=('Arial', 20))
 answer = Text(canvas, width=36, height=1, font=("Arial", 20))
 answer.place(relx=.57, rely=.976, anchor=S)
 
+
+def check(kmap):
+    valid = True
+    for x in kmap.groupings:
+        for y in kmap.groupings:
+            if x is not y and valid:
+                try:
+                    kmap.combineGrouping(x, y, False)
+                except:
+                    continue
+                finally:
+                    valid = False
+                    messagebox.showerror("Error", "Two or more adjacent groupings can be merged.")
+    if valid:
+        print("Passed merge check")
+    redrawKmap()
+
 wum = Button(canvas, text='''Check
-Answer''', font=('Arial', 11), command=notImplemented)
+Answer''', font=('Arial', 11), command=partial(check, currentKMap))
 wum.place(relx=.955, rely=.985, anchor=S)
 
 

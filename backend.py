@@ -298,7 +298,7 @@ class KarnaughMap():
 			self.groupings.remove(group)
 		return "Success"
 
-	def combineGrouping(self, first, second):
+	def combineGrouping(self, first, second, merge):
 		tl1, br1 = first
 		tl2, br2 = second
 		newGrouping = first
@@ -342,11 +342,11 @@ class KarnaughMap():
 						remove.append(first)
 					else:
 						raise Exception("Invalid Grouping")
-			print("Merging into new grouping: " + str(newGrouping))
-
-			self.addGrouping(newGrouping[0], newGrouping[1])
-			for grouping in remove:
-				self.removeGrouping(grouping[0], grouping[1])
+			if merge:
+				print("Merging into new grouping: " + str(newGrouping))
+				self.addGrouping(newGrouping[0], newGrouping[1])
+				for grouping in remove:
+					self.removeGrouping(grouping[0], grouping[1])
 		return "Success"
 
 	def printGrouping(self):
@@ -397,15 +397,6 @@ def main():
 		currentKMap.printMatrix();
 		print("Done w/ Karnaugh Map.");
 		countLines += 1;
-
-		# Testing wrapup
-		topL = (3,2)
-		botR = (0,3)
-		currentKMap.addGrouping(topL, botR)
-		currentKMap.printGrouping()
-		currentKMap.removeGrouping(topL, botR)
-		currentKMap.printGrouping();
-
 		allKarnaughMaps.append(currentKMap);
 	return allKarnaughMaps[0], variables, outputFromHLDEquiv[5]
 
