@@ -426,40 +426,61 @@ class KarnaughMap():
 
         return True, ""
 
-def main(): 
-    #Load Boolean Expressions From Input .txt File:
-    if(len(sys.argv) < 2):
-        print("Uh-OH!");
-        return;
+    def getExpressionFromGroupings(self):
+        expression = ""
+        numVars = self.totalNumVariable
+
+        var1 = None
+        var2 = None
+        var3 = None
+        var4 = None
+
+        if numVars == 1:
+            var1 = [0, 1]
+        elif numVars == 2:
+            var1 = [0, 1]
+            var2 = [0, 1]
+        elif numVars == 3:
+            var1 = [0, 0, 1, 1]
+            var2 = [0, 1, 1, 0]
+            var3 = [0, 1]
+        elif numVars == 4:
+            var1 = [0, 0, 1, 1]
+            var2 = [0, 1, 1, 0]
+            var3 = [0, 0, 1, 1]
+            var4 = [0, 1, 1, 0]
+        
+        
+        # 
+
+        return
+
+def main(inputValue): 
     countLines = 0;
-    inputFile = open(sys.argv[1], 'r');
     allKarnaughMaps = []; 
-    for inputValue in inputFile:
-        #Remove Newline Characters:
-        inputValue = inputValue.strip("\n") 
-        #Invoke Conversion to CDNF Form:
-        outputFromHLDEquiv = equivCheck.generate_equivalency(str(inputValue), str(inputValue))
-        resultNormalForm = outputFromHLDEquiv[1]
-        isContradiction = outputFromHLDEquiv[3]
-        currentRoot = buildExpressionTreeData(resultNormalForm);
-        if(countLines != 0):
-            print("");
-        print(resultNormalForm)
-        print("Pre-Order Traversal:");
-        printPreOrder(currentRoot);
-        print("Done with Pre-Order Traversal.\n");
-        print("Get All Satisfying Values:");
-        print(currentRoot.getSatisfyingValues(isContradiction));
-        print("Computed All Satisfying Values.\n");
-        print("Total # Variables:");
-        variables = currentRoot.getDistinctVariables()
-        print(variables);
-        currentKMap = KarnaughMap(currentRoot.getDistinctVariables());
-        currentKMap.setOneValues(currentRoot.getSatisfyingValues(isContradiction));
-        currentKMap.printMatrix();
-        print("Done w/ Karnaugh Map.");
-        countLines += 1;
-        allKarnaughMaps.append(currentKMap);
+    #Invoke Conversion to CDNF Form:
+    outputFromHLDEquiv = equivCheck.generate_equivalency(str(inputValue), str(inputValue))
+    resultNormalForm = outputFromHLDEquiv[1]
+    isContradiction = outputFromHLDEquiv[3]
+    currentRoot = buildExpressionTreeData(resultNormalForm);
+    if(countLines != 0):
+        print("");
+    print(resultNormalForm)
+    print("Pre-Order Traversal:");
+    printPreOrder(currentRoot);
+    print("Done with Pre-Order Traversal.\n");
+    print("Get All Satisfying Values:");
+    print(currentRoot.getSatisfyingValues(isContradiction));
+    print("Computed All Satisfying Values.\n");
+    print("Total # Variables:");
+    variables = currentRoot.getDistinctVariables()
+    print(variables);
+    currentKMap = KarnaughMap(currentRoot.getDistinctVariables());
+    currentKMap.setOneValues(currentRoot.getSatisfyingValues(isContradiction));
+    currentKMap.printMatrix();
+    print("Done w/ Karnaugh Map.");
+    countLines += 1;
+    allKarnaughMaps.append(currentKMap);
     return allKarnaughMaps[0], variables, outputFromHLDEquiv[5]
 
 if __name__ == '__main__':

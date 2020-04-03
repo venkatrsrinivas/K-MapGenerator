@@ -1,11 +1,14 @@
 import tkinter as tk
 import tkinter.messagebox as messagebox
-from tkinter.filedialog import askopenfilename as askopenfilename
+from tkinter.filedialog import asksaveasfilename
+from tkinter.filedialog import askopenfilename
 import sys
 import backend
 from tkinter import *
 from functools import partial
 from traceback import format_exc
+import tkinter.simpledialog
+import pickle
 
 #Function For Changing Text in Statusbar (Bottom of Program)
 #Arguments: x = New Text To Put In Statusbar.
@@ -18,10 +21,15 @@ def notImplemented():
 #Credits Dialog Box
 def credits():
     tk.messagebox.showinfo("Credits", "Contributors:\nVenkat Srinivas\nAlexandra Hsueh\nTobias Park\n\nhttps://github.com/venkatrsrinivas/K-MapGenerator")
-#Open K-Map File In Program
-def open(): 
-    file = askopenfilename(filetypes=(("K-Map Files", ".kmap"),))
-    return file
+#Save K-Map File In Program
+def save(kmap, vars, orig): 
+    filename = asksaveasfilename(filetypes=(("K-Map Files", ".kmap"),), defaultextension=".kmap")
+    file = open(filename, 'wb')
+    data = [kmap, vars, orig]
+    pickle.dump(data, file)
+    file.close()
+
+
 
 #Initialize The Window
 root = tk.Tk() 
@@ -48,6 +56,10 @@ root.title("K-Map Generator")
 statusb = tk.Label(root, text="status bar", bd=1, relief=tk.SUNKEN, anchor=tk.W)
 statusbar("Welcome to K-Map Generator.")
 
+currentKMap = None
+variables = None 
+original = "hello"
+
 #Setup Topbar Menus
 menu = tk.Menu(root) 
 root.config(menu=menu)
@@ -55,7 +67,7 @@ filemenu = tk.Menu(menu)
 menu.add_cascade(label="File", menu=filemenu)
 filemenu.add_command(label="New", command=notImplemented)
 filemenu.add_command(label="Open", command=open)
-filemenu.add_command(label="Save", command=notImplemented)
+
 helpmenu = tk.Menu(menu)
 menu.add_cascade(label="Help", menu=helpmenu)
 helpmenu.add_command(label="Credits", command=credits)
@@ -63,7 +75,40 @@ helpmenu.add_command(label="Credits", command=credits)
 canvas = Canvas(root, width=800, height=600, bd=0, highlightthickness=0)
 canvas.pack()
 
-currentKMap, variables, original = backend.main()
+
+statement = tk.simpledialog.askstring("Expression", '''Welcome to K-Map Generator! Before we begin, you must specify which expression you wish to simplify.
+
+Please specify below the expression that you wish to simplify, or enter '"open"' to open an existing file.
+Use the following syntax:
+A
+not(A)
+and(A, B)
+or(A, B)
+if(A, B)
+iff(A, B)
+where A and B can either be atomic statements or a functional operator. 
+
+All operators are either unary (not) or binary (and, or, if, iff), and there is no support for a generalized notation. 
+''', parent=root, initialvalue="open")
+
+
+if statement != "open":
+    currentKMap, variables, original = backend.main(statement)
+else:
+    filename = askopenfilename(filetypes=(("K-Map Files", ".kmap"),), defaultextension=".kmap")
+    file = open(filename, 'rb')
+    data = pickle.load(file)
+    print(len(data))
+    currentKMap = data[0]
+    variables = data[1]
+    original = data[2]
+    print(original)
+
+
+filemenu.add_command(label="Save", command=partial(save, currentKMap, variables, original))
+
+
+
 canvas.create_text(400, 15, text="Expression: " + str(original), font=('Arial', 18))
     
 w = Text(canvas, width=2*(currentKMap.columns)-1, height=currentKMap.rows, font=("Arial", 32))
@@ -275,7 +320,7 @@ submitMerge.place(relx=.15, rely=.35, anchor=W)
 
 grouping_text_id = canvas.create_text(630, 200, text="Groupings:", font=('Arial', 12))
 
-
+redrawKmap()
 
 
 #Keep Program Alive
