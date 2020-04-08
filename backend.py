@@ -483,47 +483,30 @@ class KarnaughMap():
             if var1val == 1:
                 conjunctions.append(str(self.allExpressionVariables[0]))
             if var1val == 0:
-                conjunctions.append("not(" + str(self.allExpressionVariables[0]) + ")")
+                conjunctions.append("~" + str(self.allExpressionVariables[0]))
             if var2val == 1:
                 conjunctions.append(str(self.allExpressionVariables[1]))
             if var2val == 0:
-                conjunctions.append("not(" + str(self.allExpressionVariables[1]) + ")")
+                conjunctions.append("~" + str(self.allExpressionVariables[1]))
             if var3val == 1:
                 conjunctions.append(str(self.allExpressionVariables[2]))
             if var3val == 0:
-                conjunctions.append("not(" + str(self.allExpressionVariables[2]) + ")")
+                conjunctions.append("~" + str(self.allExpressionVariables[2]))
             if var4val == 1:
                 conjunctions.append(str(self.allExpressionVariables[3]))
             if var4val == 0:
-                conjunctions.append("not(" + str(self.allExpressionVariables[3]) + ")")
+                conjunctions.append("~" + str(self.allExpressionVariables[3]))
             
-            while len(conjunctions) > 2:
-                newboi = []
-                newboi.append("and(" + conjunctions[0] + "," + conjunctions[1] + ")")
-                for x in range(2, len(conjunctions)):
-                    newboi.append(conjunctions[x])
-                conjunctions = newboi
+            final = ""
+            for conjunction in conjunctions:
+                final = final + " & " + conjunction
+            disjunctions.append(final[3:])
 
-            conjunction = None
-            if len(conjunctions) == 2:
-                conjunction = "and(" + conjunctions[0] + "," + conjunctions[1] + ")"
-            else:
-                conjunction = conjunctions[0]
-            disjunctions.append(conjunction)
-
-        while len(disjunctions) > 2:
-            newboi = []
-            newboi.append("or(" + disjunctions[0] + "," + disjunctions[1] + ")")
-            for x in range(2, len(disjunctions)):
-                newboi.append(disjunctions[x])
-            disjunctions = newboi
-        disjunction = None
-        if len(disjunctions) == 2:
-            disjunction = "or(" + disjunctions[0] + "," + disjunctions[1] + ")"
-        else:
-            disjunction = disjunctions[0]
-        print(disjunction)
-        return disjunction
+        final = ""
+        for disjunction in disjunctions:
+            final = final + " | " + "(" + disjunction + ")"
+        print(final[3:])
+        return final[3:]
 
     def check(self):
         valid = True

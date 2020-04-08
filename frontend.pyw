@@ -295,7 +295,7 @@ submitMerge = Button(root, text="Merge Groupings", command=partial(merge, var1, 
 submitMerge.place(relx=.67, rely=.81)
 
 
-canvas.create_text(100, 530, text="Final Answer: ", font=('Arial', 20))
+canvas.create_text(100, 530, text="Your Answer: ", font=('Arial', 20))
 answer = Text(canvas, width=36, height=1, font=("Arial", 20))
 answer.place(relx=.57, rely=.976, anchor=S)
 
@@ -305,7 +305,7 @@ def check(kmap):
     if not result:
         messagebox.showerror("Error", msg)
     else:
-        messagebox.showinfo("Success!", "Your answer is correct (expected answer was " + msg + ").")
+        messagebox.showinfo("Success!", "Your groupings were made correctly. You should have gotten " + msg + " as your simplified expression.")
 
 wum = Button(canvas, text='''Check
 Answer''', font=('Arial', 11), command=partial(check, currentKMap))
