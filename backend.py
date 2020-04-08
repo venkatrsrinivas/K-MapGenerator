@@ -363,6 +363,167 @@ class KarnaughMap():
 
     def getMatrix(self):
         return self.matrix;
+    
+    def getExpressionFromGroupings(self):
+        expression = ""
+        numVars = self.totalNumVariables
+
+        var1 = None
+        var2 = None
+        var3 = None
+        var4 = None
+
+        if numVars == 1:
+            var1 = [0, 1]
+        elif numVars == 2:
+            var1 = [[0, 1],[0, 1]]
+            var2 = [[0, 0],[1, 1]]
+        elif numVars == 3:
+            var1 = [[0, 0, 1, 1],[0, 0, 1, 1]]
+            var2 = [[0, 1, 1, 0],[0, 1, 1, 0]]
+            var3 = [[0,0,0,0],[1,1,1,1]]
+        elif numVars == 4:
+            var1 = [[0, 0, 1, 1],[0, 0, 1, 1],[0, 0, 1, 1],[0, 0, 1, 1]]
+            var2 = [[0, 1, 1, 0],[0, 1, 1, 0],[0, 1, 1, 0],[0, 1, 1, 0]]
+            var3 = [[0,0,0,0],[0,0,0,0],[1,1,1,1],[1,1,1,1]]
+            var4 = [[0,0,0,0],[1,1,1,1],[1,1,1,1],[0,0,0,0]]
+        
+        disjunctions = []
+
+        for grouping in self.groupings:
+            var1val = None
+            var2val = None
+            var3val = None
+            var4val = None
+
+            y1 = grouping[0][0]
+            x1 = grouping[0][1]
+            y2 = grouping[1][0]
+            x2 = grouping[1][1]
+
+            var1val = var1[y1][x1]
+            if numVars > 1:
+                var2val = var2[y1][x1]
+            if numVars > 2:
+                var3val = var3[y1][x1]
+            if numVars > 3:
+                var4val = var4[y1][x1]
+            if x1 <= x2 and y1 <= y2:
+                print("normal")
+                # normal grouping, no wraparounds
+                for y in range(y1, y2+1):
+                    for x in range(x1, x2+1):
+                        if var1val != None and var1[y][x] != var1val:
+                            var1val = -1
+                        if var2val != None and var2[y][x] != var2val:
+                            var2val = -1
+                        if var3val != None and var3[y][x] != var3val:
+                            var3val = -1
+                        if var4val != None and var4[y][x] != var4val:
+                            var4val = -1
+                        
+            elif x1 >= x2 and y1 <= y2:
+                print("horiz")
+                # horizontal wraparound grouping 
+                for y in range(y1, y2+1):
+                    for x in range(x1, self.columns):
+                        print(str(y) + "," + str(x))
+                        if var1val != None and var1[y][x] != var1val:
+                            var1val = -1
+                        if var2val != None and var2[y][x] != var2val:
+                            print("Q changed from" + str(var2val) + " to " + str(var2[y][x]))
+                            var2val = -1
+                        if var3val != None and var3[y][x] != var3val:
+                            var3val = -1
+                        if var4val != None and var4[y][x] != var4val:
+                            var4val = -1
+                    for x in range(0, x2+1):
+                        if var1val != None and var1[y][x] != var1val:
+                            var1val = -1
+                        if var2val != None and var2[y][x] != var2val:
+                            var2val = -1
+                        if var3val != None and var3[y][x] != var3val:
+                            var3val = -1
+                        if var4val != None and var4[y][x] != var4val:
+                            var4val = -1
+            elif x1 <= x2 and y1 >= y2:
+                # vertical wraparound grouping 
+                print("vert")
+                for y in range(y1, self.rows):
+                    for x in range(x1, x2+1):
+                        if var1val != None and var1[y][x] != var1val:
+                            var1val = -1
+                        if var2val != None and var2[y][x] != var2val:
+                            var2val = -1
+                        if var3val != None and var3[y][x] != var3val:
+                            var3val = -1
+                        if var4val != None and var4[y][x] != var4val:
+                            var4val = -1
+                for y in range(0, y2+1):
+                    for x in range(x1, x2+1):
+                        if var1val != None and var1[y][x] != var1val:
+                            var1val = -1
+                        if var2val != None and var2[y][x] != var2val:
+                            var2val = -1
+                        if var3val != None and var3[y][x] != var3val:
+                            var3val = -1
+                        if var4val != None and var4[y][x] != var4val:
+                            var4val = -1
+            else:
+                # what in the world??
+                return False, "Internal error, please check manually"
+
+            print(var1val)
+            print(var2val)
+            print(var3val)
+            print(var4val)
+
+            conjunctions = []
+
+            if var1val == 1:
+                conjunctions.append(str(self.allExpressionVariables[0]))
+            if var1val == 0:
+                conjunctions.append("not(" + str(self.allExpressionVariables[0]) + ")")
+            if var2val == 1:
+                conjunctions.append(str(self.allExpressionVariables[1]))
+            if var2val == 0:
+                conjunctions.append("not(" + str(self.allExpressionVariables[1]) + ")")
+            if var3val == 1:
+                conjunctions.append(str(self.allExpressionVariables[2]))
+            if var3val == 0:
+                conjunctions.append("not(" + str(self.allExpressionVariables[2]) + ")")
+            if var4val == 1:
+                conjunctions.append(str(self.allExpressionVariables[3]))
+            if var4val == 0:
+                conjunctions.append("not(" + str(self.allExpressionVariables[3]) + ")")
+            
+            while len(conjunctions) > 2:
+                newboi = []
+                newboi.append("and(" + conjunctions[0] + "," + conjunctions[1] + ")")
+                for x in range(2, len(conjunctions)):
+                    newboi.append(conjunctions[x])
+                conjunctions = newboi
+
+            conjunction = None
+            if len(conjunctions) == 2:
+                conjunction = "and(" + conjunctions[0] + "," + conjunctions[1] + ")"
+            else:
+                conjunction = conjunctions[0]
+            disjunctions.append(conjunction)
+
+        while len(disjunctions) > 2:
+            newboi = []
+            newboi.append("or(" + disjunctions[0] + "," + disjunctions[1] + ")")
+            for x in range(2, len(disjunctions)):
+                newboi.append(disjunctions[x])
+            disjunctions = newboi
+        disjunction = None
+        if len(disjunctions) == 2:
+            disjunction = "or(" + disjunctions[0] + "," + disjunctions[1] + ")"
+        else:
+            disjunction = disjunctions[0]
+        print(disjunction)
+        return disjunction
 
     def check(self):
         valid = True
@@ -423,37 +584,10 @@ class KarnaughMap():
                 x = x + 1
             y = y + 1
             x=0
+        expression = self.getExpressionFromGroupings()
+        return True, expression
 
-        return True, ""
-
-    def getExpressionFromGroupings(self):
-        expression = ""
-        numVars = self.totalNumVariable
-
-        var1 = None
-        var2 = None
-        var3 = None
-        var4 = None
-
-        if numVars == 1:
-            var1 = [0, 1]
-        elif numVars == 2:
-            var1 = [0, 1]
-            var2 = [0, 1]
-        elif numVars == 3:
-            var1 = [0, 0, 1, 1]
-            var2 = [0, 1, 1, 0]
-            var3 = [0, 1]
-        elif numVars == 4:
-            var1 = [0, 0, 1, 1]
-            var2 = [0, 1, 1, 0]
-            var3 = [0, 0, 1, 1]
-            var4 = [0, 1, 1, 0]
-        
-        
-        # 
-
-        return
+    
 
 def main(inputValue): 
     countLines = 0;

@@ -305,7 +305,7 @@ def check(kmap):
     if not result:
         messagebox.showerror("Error", msg)
     else:
-        messagebox.showinfo("Success!", "Your answer is correct.")
+        messagebox.showinfo("Success!", "Your answer is correct (expected answer was " + msg + ").")
 
 wum = Button(canvas, text='''Check
 Answer''', font=('Arial', 11), command=partial(check, currentKMap))
