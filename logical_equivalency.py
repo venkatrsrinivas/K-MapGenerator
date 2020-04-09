@@ -7,6 +7,7 @@ import util
 def runner(formula1, formula2):
     formula1 = forseti.parser.parse(formula1)
     formula2 = forseti.parser.parse(formula2)
+    print(type(formula1))
 
     statement1, steps1, isContra1 = util.convert(deepcopy(formula1))
     statement2, steps2, isContra2 = util.convert(deepcopy(formula2))
