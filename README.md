@@ -31,7 +31,8 @@ Expressions with more than 4 variables are not supported at this time.
 ![Figure 2](https://github.com/venkatrsrinivas/K-MapGenerator/blob/master/screenshots/2.png)
 
 ## Opening a File
-Instead of specify an expression to simplify manually, you can opt to open an existing K-Map file. To do this, type `open` into the dialogue box (pre-filled by default) and hit OK. You will then be prompted to select the file to open.
+Instead of specify an expression to simplify manually, you can opt to open an existing K-Map file. To do this, type `open` into the dialogue box (pre-filled by default) and hit OK. You will then be prompted to select the file to open. A sample file, 4variables.kmap, is included in this repo if you wish to play around.
+
 ![Figure 1](https://github.com/venkatrsrinivas/K-MapGenerator/blob/master/screenshots/1.png)
 
 ## The Main Interface
