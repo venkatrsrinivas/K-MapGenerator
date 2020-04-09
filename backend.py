@@ -11,7 +11,6 @@ class RegularExpressionTreeNode():
     def printValue(self):
         print(self.value);
 
-
 class AndExpressionTreeNode():
     #Constructor For AndExpressionTreeNode:
     def __init__(self):
@@ -81,19 +80,6 @@ def printPreOrder(root):
         for k in range(0, len(root.children)):
             #print(root.children)
             printPreOrder(root.children[k]);
-
-
-# def printInOrder(root):
-#     if(root != None):
-#         total = len(root.children);
-#         if(total != 0):
-#             for k in range(0, total-1):
-#                 printInOrder(root.children[k]);
-#             print(root.value);
-#             printInOrder(root.children[total-1]);
-#         else:
-#             print(root.value);
-
 
 def parseAndExpression(start, end, currentExpression):
     newAndTreeNode = AndExpressionTreeNode();
@@ -170,13 +156,13 @@ def isPowerOfTwo(n):
 class KarnaughMap():
     #Constructor For KarnaughMap
     def __init__(self, allExpressionVariables):
-        self.allExpressionVariables = allExpressionVariables;
-        self.totalNumVariables = len(allExpressionVariables);
-        self.xTotalBits = math.floor(self.totalNumVariables/2);
-        self.yTotalBits = math.ceil(self.totalNumVariables/2);
-        self.rows = pow(2, self.xTotalBits);
-        self.columns = pow(2, self.yTotalBits);
-        self.matrix = [[0 for m in range(self.columns)] for k in range(self.rows)];
+        self.allExpressionVariables = allExpressionVariables
+        self.totalNumVariables = len(allExpressionVariables)
+        self.xTotalBits = math.floor(self.totalNumVariables/2)
+        self.yTotalBits = math.ceil(self.totalNumVariables/2)
+        self.rows = pow(2, self.xTotalBits)
+        self.columns = pow(2, self.yTotalBits)
+        self.matrix = [[0 for m in range(self.columns)] for k in range(self.rows)]
         # groupings will be represented as a list of tuples where we have the coordinates of the top left nad bottom right
         self.groupings = [] 
 
@@ -184,7 +170,6 @@ class KarnaughMap():
         for currentOneValue in allOneValues:
             currentX, currentY = currentOneValue[self.yTotalBits:], currentOneValue[0:self.yTotalBits];
             xIndex, yIndex = self.strToIndex(currentX), self.strToIndex(currentY);
-            #print(xIndex, " ", yIndex);
             self.matrix[xIndex][yIndex] = 1;
 
     #Note: Needs To Be Rewritten To Account For Only Changing One Bit
@@ -195,16 +180,7 @@ class KarnaughMap():
         if(len(input) == 1):
             return int(input);
         allTwoVariableData = ["00","01","11","10"]
-        return allTwoVariableData.index(input)
-        # resultIndex = 0;
-        # tempInput = input;
-        # currentExponent = len(tempInput)-1;
-        # while(len(tempInput) != 0):
-        #     currentValue = int(tempInput[0]);
-        #     resultIndex += (currentValue*pow(2, currentExponent));
-        #     tempInput = tempInput[1:];
-        #     currentExponent -= 1;
-        # return resultIndex; 
+        return allTwoVariableData.index(input) 
 
     def addNormGrouping(self, topLeft, bottomRight):
         # Takes in the coordinates and determines if the values
@@ -364,6 +340,7 @@ class KarnaughMap():
     def getMatrix(self):
         return self.matrix;
     
+    # This function generates a simplified logical expression based on the groupings the user created
     def getExpressionFromGroupings(self):
         expression = ""
         numVars = self.totalNumVariables
@@ -373,6 +350,7 @@ class KarnaughMap():
         var3 = None
         var4 = None
 
+        # Here we hardcode the T/F values for each variable for each coordinate on the K-Map.
         if numVars == 1:
             var1 = [0, 1]
         elif numVars == 2:
@@ -388,8 +366,11 @@ class KarnaughMap():
             var3 = [[0,0,0,0],[0,0,0,0],[1,1,1,1],[1,1,1,1]]
             var4 = [[0,0,0,0],[1,1,1,1],[1,1,1,1],[0,0,0,0]]
         
+        # The final expression will be in DNF. This array will hold all of the disjuncts to be or'd together
         disjunctions = []
 
+        # Iterate through each grouping. For each grouping, we detect which variables change across the grouping
+        # and which ones stay the same
         for grouping in self.groupings:
             var1val = None
             var2val = None
@@ -478,8 +459,10 @@ class KarnaughMap():
             print(var3val)
             print(var4val)
 
+            # This array stores all the conjuncts for this disjunct
             conjunctions = []
 
+            # populate the conjuncts
             if var1val == 1:
                 conjunctions.append(str(self.allExpressionVariables[0]))
             if var1val == 0:
@@ -498,20 +481,25 @@ class KarnaughMap():
                 conjunctions.append("~" + str(self.allExpressionVariables[3]))
             
             final = ""
+            # conjunct the conjuncts together and add them as a disjunct
             for conjunction in conjunctions:
                 final = final + " & " + conjunction
             disjunctions.append(final[3:])
 
+        # disjunct the disjuncts together, the result is the DNF expression
         final = ""
         for disjunction in disjunctions:
             final = final + " | " + "(" + disjunction + ")"
         print(final[3:])
         return final[3:]
 
+    # This function is responsible for checking a user's answer.
     def check(self):
         valid = True
 
-        # Check whether two groupings can be merged
+        # Check whether there are unmerged groupings; ie, two groupings that could be merged.
+        # We do this through brute force by attempting to merge every grouping with every other grouping.
+        # However, we set a flag so that no changes are actually made to the K-Map.
         for x in self.groupings:
             for y in self.groupings:
                 if x is not y and valid:
@@ -519,6 +507,7 @@ class KarnaughMap():
                     try:
                         success = self.combineGrouping(x, y, False)
                     except:
+                        # groupings x and y could not be merged
                         success = "failed"
                         continue
                     finally:
@@ -528,10 +517,8 @@ class KarnaughMap():
                             print(y)
                             valid = False
                             return False, "Two or more groupings can be merged."
-        if valid:
-            print("Passed merge check")
 
-        # Verify that there are no ungrouped 1's
+        # Verify that there are no ungrouped 1's remaining in the K-Map
         y = 0
         x = 0
         for row in self.matrix:
@@ -567,10 +554,9 @@ class KarnaughMap():
                 x = x + 1
             y = y + 1
             x=0
+        # Groupings were made correctly! We now create a logical expression from the groupings.
         expression = self.getExpressionFromGroupings()
         return True, expression
-
-    
 
 def main(inputValue): 
     countLines = 0;
