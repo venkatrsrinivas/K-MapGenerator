@@ -24,7 +24,7 @@ def credits():
 def save(kmap, vars, orig): 
     filename = asksaveasfilename(filetypes=(("K-Map Files", ".kmap"),), defaultextension=".kmap")
     file = open(filename, 'wb')
-    data = [kmap, vars, orig]
+    data = [kmap, vars, orig, answer.get("1.0", END)]
     pickle.dump(data, file)
     file.close()
 
@@ -166,6 +166,7 @@ helpmenu.add_command(label="Credits", command=credits)
 currentKMap = None
 variables = None 
 original = "hello"
+ans = ""
 
 # Initialize canvas where frontend components will live
 canvas = Canvas(root, width=800, height=600, bd=0, highlightthickness=0)
@@ -199,6 +200,7 @@ else:
     currentKMap = data[0]
     variables = data[1]
     original = data[2]
+    ans = data[3]
     print(original)
 
 # Save menu must be added here, otherwise all of the variables in the partial are set to None
@@ -312,6 +314,7 @@ submitMerge.place(relx=.67, rely=.81)
 
 canvas.create_text(100, 530, text="Your Answer: ", font=('Arial', 20))
 answer = Text(canvas, width=36, height=1, font=("Arial", 20))
+answer.insert("1.0", ans)
 answer.place(relx=.57, rely=.976, anchor=S)
 
 wum = Button(canvas, text='''Check
