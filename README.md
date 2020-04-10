@@ -4,7 +4,7 @@ The rest of this guide assumes that you know what K-Maps are and how they are us
 # Installation
 Downnload the latest version of Python 3 to your computer from python.org. The program was built and tested using Python 3.8.
 
-You must also install `forseti`, a parsing library used by this program. Open a terminal window and run `pip install forseti` on Windows or `pip3 install forseti` on Mac/Linux.
+You must also install `forseti`, a parsing library used by this program, and `pythonds`. Open a terminal window and run `pip install forseti pythonds` on Windows or `pip3 install forseti pythonds` on Mac/Linux.
 
 This application also requires Tkinter/Tcl version 8.6+ for 4-variable K-Maps (if you are not going to be working with 4-variable K-Maps, earlier versions should work). On Mac, you may have to reinstall Python as described at https://www.reddit.com/r/Python/comments/54x1mu/help_with_installing_tkinter_86_on_mac/. 
 
