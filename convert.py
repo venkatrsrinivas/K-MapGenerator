@@ -219,9 +219,15 @@ def convertToTree(postfix):
 	return convertToTree.peek()
 
 #Main Driver Code:
-currentExpression = str(sys.argv[1])
-prefixValue = convertInfixToPrefix(currentExpression)
-print("Prefix Expression:", prefixValue)
-currentRoot = convertToTree(prefixValue[::-1])
-print(currentRoot.convertToHLD())
+def main(inputValue):
+	currentExpression = str(sys.argv[1])
+	prefixValue = convertInfixToPrefix(currentExpression)
+	print("Prefix Expression:", prefixValue)
+	currentRoot = convertToTree(prefixValue[::-1])
+	print(currentRoot.convertToHLD())
 
+
+if __name__ == '__main__':
+	if(len(sys.argv) >= 2):     
+		inputValue = str(sys.argv[1])
+		main(inputValue)

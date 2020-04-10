@@ -587,4 +587,10 @@ def main(inputValue):
     return allKarnaughMaps[0], variables, outputFromHLDEquiv[5]
 
 if __name__ == '__main__':
-    main();
+    if(len(sys.argv) >= 2):     
+        inputFile = sys.argv[1]
+        with open(inputFile) as currentFileReader:
+            inputValue = currentFileReader.readline()
+            main(inputValue)
+
+
