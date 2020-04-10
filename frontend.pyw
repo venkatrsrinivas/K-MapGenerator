@@ -130,7 +130,7 @@ def check(kmap):
         messagebox.showerror("Error", msg)
     else:
         print("Expected answer: " + msg)
-        user_answer = answer.get("1.0", END)
+        user_answer = str(answer.get("1.0", END))
         print("User's answer:" + user_answer)
         correct_answer = msg
 
@@ -144,7 +144,7 @@ def check(kmap):
 
         # Use HLD to check whether user_answer is the same as correct_answer 
         results = equivCheck.generate_equivalency(user_answer, correct_answer, False)
-        success = results[0]
+        success = str(results[1]) == str(results[2])
         print("Result 1:" + str(results[1]))
         print("Result 2:" + str(results[2]))
         if success:

@@ -6,6 +6,7 @@ For example, it will take:
 
 import sys
 from pythonds.basic import Stack	
+from tkinter import messagebox
 
 #Basic Tree Structure For Expression:
 #Run w/ Basic Command 
@@ -229,13 +230,16 @@ def convertToTree(postfix):
 
 #Main Driver Code:
 def main(inputValue):
-	currentExpression = inputValue
-	prefixValue = convertInfixToPrefix(currentExpression)
-	print("Prefix Expression:", prefixValue)
-	currentRoot = convertToTree(prefixValue[::-1])
-	finalExpression = currentRoot.convertToHLD()
-	print(finalExpression)
-	return finalExpression
+    try:
+        currentExpression = inputValue
+        prefixValue = convertInfixToPrefix(currentExpression)
+        print("Prefix Expression:", prefixValue)
+        currentRoot = convertToTree(prefixValue[::-1])
+        finalExpression = currentRoot.convertToHLD()
+        print(finalExpression)
+        return finalExpression
+    except:
+        messagebox.showerror("Error", "Failed to parse expression. Make sure you answer syntax is correct.")
 
 if __name__ == '__main__':
 	if(len(sys.argv) >= 2):     
