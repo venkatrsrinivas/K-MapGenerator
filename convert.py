@@ -1,4 +1,3 @@
-
 '''
 Takes An Expression From Infix Notation To Prefix Notation.
 For example, it will take: 
@@ -8,22 +7,33 @@ For example, it will take:
 import sys
 from pythonds.basic import Stack	
 
+#Basic Tree Structure For Expression:
+#Run w/ Basic Command 
 class TreeNode(object):
 	"""docstring for TreeNode"""
 	def __init__(self, value):
+		#Store Node Value + Left + Right Pointers.
 		self.value = value
 		self.left = None
 		self.right = None 
 
-	def print(self):
-		if(self.left != None):
-			self.left.print()
-		if(self.right != None):
-			self.right.print()
+	#Basic Helper Function To Print Subtree Rooted At self.
+	def printTree(self):
+		if(self == None):
+			return;
+		print(self.value)
+		self.left.print()
+		self.right.print()
 
 	def convertToHLD(self):
+		#Base Case:
+		if(self == None):
+			return "";
+		#Initialize Current Output Expression:
 		output = "";
+		#Case 1: Operator.
 		if(isOperator(self.value)):
+			#Respective STR Based On Operator.
 			if(self.value == '&'):
 				output += "and("
 			elif(self.value == '|'):
@@ -35,19 +45,21 @@ class TreeNode(object):
 			elif(self.value == '~'):
 				output += "not("
 			
+			#Negation Does Not Have Left Value.
+			#By Definition/Construction of Expression Tree, 
+			#Negation Nodes Only Have Left Children.
 			if(self.value != "~"):
-				if(self.right != None):
-					output += self.right.convertToHLD()
-			if(self.left != None):
-				if(self.value != "~"):
-					output += ", ";
-				output += self.left.convertToHLD()
+				output += self.right.convertToHLD()
+			if(self.value != "~"):
+				output += ", ";
+			output += self.left.convertToHLD()
 			output += ")"
 		else:
+			#Should Be Alpha Atomic Statement/Variable.
 			output += self.value
 		return output
 
-
+#Obtain Associativity of Operator.
 def getAssociativity(c):	
 	if(c == '&'):
 		return 'L'
@@ -62,7 +74,10 @@ def getAssociativity(c):
 	else:
 		return 'L'
    
+#Used By infixToPostfix().
+#Determines if c is Valid Operator.
 def isOperator(c):
+	#All Boolean Logic Operators.
 	if(c == '&'):
 		return True
 	elif(c == '|'):
@@ -73,10 +88,14 @@ def isOperator(c):
 		return True
 	elif(c == '~'):
 		return True
+	#Default Case: 
 	else:
 		return False
 
+#Used By infixToPostfix().
+#Determines Precedence of c.
 def getPrecedence(c):
+	#Respective Operator Precedence.
 	if(c == '&'):
 		return 2
 	elif(c == '|'):
@@ -87,16 +106,20 @@ def getPrecedence(c):
 		return 0
 	elif(c == '~'):
 		return 4
+	#Default Case:
 	else:
 		return -1
 
+#Run Shunting-Yard Algorithm By Edgar Dijkstra.
 def infixToPostfix(infix):
-	infix = '(' + infix + ')'  
+	#infix = '(' + infix + ')'  
+	#Initialize Stack.
 	opStack = Stack() 
 	output = ""
-	print(infix)
-	for k in range(0, len(infix)):
-		token = infix[k]
+	#print(infix)
+	#Loop Through All Tokens:
+	for token in infix:
+		#Case 1: Operator.
 		if(isOperator(token)):
 			while(not(opStack.isEmpty())
 				and isOperator(opStack.peek())
@@ -105,12 +128,15 @@ def infixToPostfix(infix):
 				output += opStack.peek()
 				opStack.pop()
 			opStack.push(token)   
+		#Case 2: Left Paranthesis.
 		elif(token == '('):
 			opStack.push(token)
+		#Case 3: Right Paranthesis.
 		elif(token == ')'):
 			while(not(opStack.isEmpty()) and opStack.peek() != '('):
 				output += opStack.peek()
 				opStack.pop()
+			#Error-Checking:
 			if(opStack.isEmpty()):
 				print("Empty Stack.")
 				print(output)
@@ -118,19 +144,22 @@ def infixToPostfix(infix):
 			if(opStack.peek() == '('):
 				opStack.pop()
 		else:
-			if(not(token.isalpha()) and not(token.isspace())):
+			#Check For Non-Alpha Characters:
+			if(not(token.isalpha())):
 				print("Not Alpha Not Space.")
 				return "ERROR"
 			output += token
-
+	#Append All Remaining Characters From opStack.
 	while(not(opStack.isEmpty())):
 		if(opStack.peek() == '(' or opStack.peek() == ')'):
-			print("Uh-OH!")
+			print("Uh-OH! Mismatched Paranthesis")
 			return "ERROR"
 		output += opStack.peek()
 		opStack.pop()
+	#Return Output.
 	return output
 
+#Convert Infix Notation STR To Prefix Notation STR:
 def convertInfixToPrefix(infix):
 	infix = infix[::-1]
 	for k in range(0, len(infix)):
@@ -142,48 +171,57 @@ def convertInfixToPrefix(infix):
 	prefix = prefix[::-1]
 	return prefix
 
-def convertPrefixToTree(prefix):
-	if(prefix == "ERROR"):
+#Convert To Tree:
+def convertToTree(postfix):
+	#If Output convertInfixToPrefix Returned "ERROR" + Postfix = "RORRE".
+	if(postfix == "RORRE"):
 		return
+	#Initialize Stack.
 	convertToTree = Stack()
-	for k in range(0, len(prefix)):
-		if(isOperator(prefix[k]) and prefix[k] != "~"):
+	for k in range(0, len(postfix)):
+		#Case 1: Operator + Not-Negation
+		if(isOperator(postfix[k]) and postfix[k] != "~"):
+			#Pop Previous One TreeNode.
 			prevOne = None
 			if(not(convertToTree.isEmpty())):
 				prevOne = convertToTree.peek()
 				convertToTree.pop()
-			
+			#Pop Previous Two TreeNode.
 			prevTwo = None
 			if(not(convertToTree.isEmpty())):
 				prevTwo = convertToTree.peek()
 				convertToTree.pop()
-
-			currentNode = TreeNode(prefix[k])
+			#Create + Set New TreeNode.
+			currentNode = TreeNode(postfix[k])
 			currentNode.left = prevTwo
 			currentNode.right = prevOne
 			convertToTree.push(currentNode)
-
-		elif(isOperator(prefix[k]) and prefix[k] == "~"):
+		#Case 2: Operator + Negation.
+		elif(isOperator(postfix[k]) and postfix[k] == "~"):
+			#Pop Previous One TreeNode.
 			prevOne = None
 			if(not(convertToTree.isEmpty())):
 				prevOne = convertToTree.peek()
 				convertToTree.pop()
-			currentNode = TreeNode(prefix[k])
+			#Create + Set New TreeNode.
+			currentNode = TreeNode(postfix[k])
 			currentNode.left = prevOne 
 			convertToTree.push(currentNode)
+		#Case 3: New Leaf Node.
 		else:
-			currentNode = TreeNode(prefix[k])
+			currentNode = TreeNode(postfix[k])
 			convertToTree.push(currentNode)
 
+	#Assert Only Root:
 	if(convertToTree.size() != 1):
 		print("Error In Construction. Must Review Input/Output.")
 	#Set New Head Value = Top/Root of Stack.
 	return convertToTree.peek()
 
+#Main Driver Code:
 currentExpression = str(sys.argv[1])
 prefixValue = convertInfixToPrefix(currentExpression)
-print(prefixValue)
-root = convertPrefixToTree(prefixValue[::-1])
-#root.print()
-print(root.convertToHLD())
+print("Prefix Expression:", prefixValue)
+currentRoot = convertToTree(prefixValue[::-1])
+print(currentRoot.convertToHLD())
 
