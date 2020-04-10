@@ -22,7 +22,7 @@ class TreeNode(object):
 	def printTree(self):
 		if(self == None):
 			return
-		print(self.value)
+		# print(self.value)
 		self.left.print()
 		self.right.print()
 
@@ -139,21 +139,21 @@ def infixToPostfix(infix):
 				opStack.pop()
 			#Error-Checking:
 			if(opStack.isEmpty()):
-				print("Empty Stack.")
+				# print("Empty Stack.")
 				print(output)
-				return "ERROR"
+				# return "ERROR"
 			if(opStack.peek() == '('):
 				opStack.pop()
 		else:
 			#Check For Non-Alpha Characters:
 			if(not(token.isalpha())):
-				print("Not Alpha Not Space:", token, ".")
+				# print("Not Alpha Not Space:", token, ".")
 				return "ERROR"
 			output += token
 	#Append All Remaining Characters From opStack.
 	while(not(opStack.isEmpty())):
 		if(opStack.peek() == '(' or opStack.peek() == ')'):
-			print("Uh-OH! Mismatched Paranthesis")
+			# print("Uh-OH! Mismatched Paranthesis")
 			return "ERROR"
 		output += opStack.peek()
 		opStack.pop()
@@ -223,8 +223,8 @@ def convertToTree(postfix):
 			convertToTree.push(currentNode)
 
 	#Assert Only Root:
-	if(convertToTree.size() != 1):
-		print("Error In Construction. Must Review Input/Output.")
+	# if(convertToTree.size() != 1):
+		# print("Error In Construction. Must Review Input/Output.")
 	#Set New Head Value = Top/Root of Stack.
 	return convertToTree.peek()
 
@@ -233,13 +233,14 @@ def main(inputValue):
     try:
         currentExpression = inputValue
         prefixValue = convertInfixToPrefix(currentExpression)
-        print("Prefix Expression:", prefixValue)
+        # print("Prefix Expression:", prefixValue)
         currentRoot = convertToTree(prefixValue[::-1])
         finalExpression = currentRoot.convertToHLD()
-        print(finalExpression)
+        # print(finalExpression)
         return finalExpression
     except:
         messagebox.showerror("Error", "Failed to parse expression. Make sure you answer syntax is correct.")
+        return ""
 
 if __name__ == '__main__':
 	if(len(sys.argv) >= 2):     

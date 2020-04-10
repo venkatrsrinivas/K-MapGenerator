@@ -31,7 +31,7 @@ def save(kmap, vars, orig):
     file.close()
 
 def instructions():
-    messagebox.showinfo("Instructions", "Use Create Grouping to create a rectangular grouping. \n\nTo define a grouping, specify the upper-left and lower-right coordinates of the grouping on the K-Map. The upper-left corner is (0, 0). \n\nTo create non-rectangular groupings, create multiple groupings and merge them using Merge Groupings. \n\nOnce all the groupings are constructed, use them to simplify the expression; enter your final answer under Final Answer and click Check Answer to verify if you are correct.\n\nSyntax:\nNOT: ~\nAND: ^\nOR: |\nIF: ->\nIFF: <->.\nAll operators are either unary (not) or binary (and, or, if, iff) and there is no support for a generalized notation. This means that A & B & C will thrown an error, you must do A & (B & C).")
+    messagebox.showinfo("Instructions", "Full instructons can be found at https://github.com/venkatrsrinivas/K-MapGenerator/blob/master/README.md")
 
 # groupingsmap keeps track of all the groupings in the K-Map and what color they are being displayed as
 groupingsmap = {}
@@ -58,13 +58,13 @@ def redrawKmap():
         groupingsmap[colors[color]] = grouping
         thisgrouping = [] # contains all of the rectangular regions in this grouping
         if str(grouping[0][0])[0] == '(':
-            print("Nested grouping")
+            # print("Nested grouping")
             # Nested, this grouping is actually two merged rectangular groupings and may actually be non-rectangular.
             # So, we will split it into its rectangular components.
             thisgrouping.append(grouping[0])
             thisgrouping.append(grouping[1])
         else:
-            print("Non-nested grouping")
+            # print("Non-nested grouping")
             # This is just one normal rectangular grouping
             thisgrouping.append(grouping)
         for rectangle in thisgrouping:
@@ -73,10 +73,10 @@ def redrawKmap():
             x1 = str(rectangle[0][1]*2)
             y2 = str(rectangle[1][0]+1)
             x2 = str(rectangle[1][1]*2+1)
-            print("x1:"+x1)
-            print("y1:"+y1)
-            print("x2:"+x2)
-            print("y2:"+y2)
+            # print("x1:"+x1)
+            # print("y1:"+y1)
+            # print("x2:"+x2)
+            # print("y2:"+y2)
             if y2 < y1: # Vertical wraparound
                 for y in range(int(y1), int(currentKMap.columns*2+1)):
                     w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
@@ -129,26 +129,28 @@ def check(kmap):
     if not result:
         messagebox.showerror("Error", msg)
     else:
-        print("Expected answer: " + msg)
+        # print("Expected answer: " + msg)
         user_answer = str(answer.get("1.0", END))
-        print("User's answer:" + user_answer)
+        # print("User's answer:" + user_answer)
         correct_answer = msg
 
         # Convert both answers to forseti notation
-        print("CONVERTING")
+        # print("CONVERTING")
         correct_answer = convert.main(correct_answer)
-        print("Expected answer: " + correct_answer)
+        # print("Expected answer: " + correct_answer)
         user_answer = convert.main(user_answer)
-        print("User's answer:" + user_answer)
+        # print("User's answer:" + user_answer)
         
+        if user_answer == "":
+            return
 
         # Use HLD to check whether user_answer is the same as correct_answer 
         results = equivCheck.generate_equivalency(user_answer, correct_answer, False)
         success = str(results[1]) == str(results[2])
-        print("Result 1:" + str(results[1]))
-        print("Result 2:" + str(results[2]))
+        # print("Result 1:" + str(results[1]))
+        # print("Result 2:" + str(results[2]))
         if success:
-            messagebox.showinfo("Success!", "Your groupings were made correctly. You should have gotten " + msg + " as your simplified expression.")
+            messagebox.showinfo("Success!", "Your groupings were made correctly and your final simplified expression matches your groupings.")
         else:
             messagebox.showerror("Error", "Your groupings are correct, but your final expression is incorrect.")
 
@@ -200,16 +202,12 @@ statement = tk.simpledialog.askstring("Expression", '''Welcome to K-Map Generato
 
 Please specify below the expression that you wish to simplify, or enter '"open"' to open an existing file.
 Use the following syntax:
-A
-not(A)
-and(A, B)
-or(A, B)
-if(A, B)
-iff(A, B)
-where A and B can either be atomic statements or a functional operator. 
 
-All operators are either unary (not) or binary (and, or, if, iff), and there is no support for a generalized notation. 
-''', parent=root, initialvalue="open")
+AND = &
+OR = |
+NOT = ~
+CONDITIONAL = ->
+BICONDITIONAL = <->''', parent=root, initialvalue="open")
 
 if statement != "open":
     currentKMap, variables, original = backend.main(statement)
@@ -218,12 +216,12 @@ else:
     filename = askopenfilename(filetypes=(("K-Map Files", ".kmap"),), defaultextension=".kmap")
     file = open(filename, 'rb')
     data = pickle.load(file)
-    print(len(data))
+    # print(len(data))
     currentKMap = data[0]
     variables = data[1]
     original = data[2]
     ans = data[3]
-    print(original)
+    # print(original)
 
 # Save menu must be added here, otherwise all of the variables in the partial are set to None
 filemenu.add_command(label="Save", command=partial(save, currentKMap, variables, original))
@@ -248,16 +246,16 @@ w.place(relx=.5, rely=.25, anchor=N) # Place K-Map on the canvas
 
 # Draw labels on K-Map
 if numVars == 0:
-    print("0 variables")
+    # print("0 variables")
     messagebox.showerror("Error", "Error: This expression has 0 variables and is not valid. Please choose another file to load.")
 elif numVars == 1:
-    print("1 variables")
+    # print("1 variables")
     canvas.create_line(310, 90, 360, 140)
     canvas.create_text(345, 100, text=variables[0], font=('Arial bold', 20))
     canvas.create_text(375, 120, text="0", font=('Arial', 20))
     canvas.create_text(410, 120, text="1", font=('Arial', 20))
 elif numVars == 2:
-    print("2 variables")
+    # print("2 variables")
     canvas.create_line(310, 90, 360, 140)
     canvas.create_text(345, 100, text=variables[0], font=('Arial bold', 20))
     canvas.create_text(325, 130, text=variables[1], font=('Arial bold', 20))
@@ -266,7 +264,7 @@ elif numVars == 2:
     canvas.create_text(350, 165, text="0", font=('Arial', 20))
     canvas.create_text(350, 215, text="1", font=('Arial', 20))
 elif numVars == 3:
-    print("3 variables")
+    # print("3 variables")
     canvas.create_line(250, 80, 310, 140)
     canvas.create_text(290, 95, text=variables[0]+variables[1], font=('Arial bold', 20))
     canvas.create_text(270, 125, text=variables[2], font=('Arial bold', 20))
@@ -277,7 +275,7 @@ elif numVars == 3:
     canvas.create_text(300, 165, text="0", font=('Arial', 20))
     canvas.create_text(300, 215, text="1", font=('Arial', 20))
 elif numVars == 4:
-    print("4 variables")
+    # print("4 variables")
     canvas.create_line(250, 80, 310, 140)
     canvas.create_text(290, 95, text=variables[0]+variables[1], font=('Arial bold', 20))
     canvas.create_text(265, 125, text=variables[2]+variables[3], font=('Arial bold', 20))
@@ -290,7 +288,7 @@ elif numVars == 4:
     canvas.create_text(300, 265, text="11", font=('Arial', 20), angle=90)
     canvas.create_text(300, 315, text="10", font=('Arial', 20), angle=90)
 else:
-    print("> 4 variables")
+    # print("> 4 variables")
     messagebox.showerror("Error", "Error: Expressions with more than 4 variables are not supported at this time. Please choose another file to load.")
 
 # Draw create grouping and merge grouping frontend components

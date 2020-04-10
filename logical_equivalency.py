@@ -21,7 +21,7 @@ if __name__ == "__main__":
     PARSER_ARGS = PARSER.parse_args()
     equal, formula1, formula2 = runner(PARSER_ARGS.formula1, PARSER_ARGS.formula2)
 
-    if equal:
+"""     if equal:
         for steps, step_type in formula1[1]:
             for step in steps:
                 print(util.pretty_print(step).ljust(120) + " | " + util.StepTypes.get_message(step_type))
@@ -29,3 +29,4 @@ if __name__ == "__main__":
         for steps, step_type in formula2[1]:
             for step in steps:
                 print(util.pretty_print(step).ljust(120) + " | " + util.StepTypes.get_message(step_type))
+ """
