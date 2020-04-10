@@ -4,13 +4,13 @@ from copy import deepcopy
 import forseti.parser
 import util
 
-def runner(formula1, formula2):
+def runner(formula1, formula2, adjacency):
     formula1 = forseti.parser.parse(formula1)
     formula2 = forseti.parser.parse(formula2)
     print(type(formula1))
 
-    statement1, steps1, isContra1 = util.convert(deepcopy(formula1))
-    statement2, steps2, isContra2 = util.convert(deepcopy(formula2))
+    statement1, steps1, isContra1 = util.convert(deepcopy(formula1), adjacency)
+    statement2, steps2, isContra2 = util.convert(deepcopy(formula2), adjacency)
 
     return statement1 == statement2, [statement1, steps1, isContra1], [statement2, steps2, isContra2], formula1
 

@@ -49,15 +49,26 @@ class StepTypes(object):
             return "Unknown type"
 
 
-def convert(statement):
+def convert(statement, adjacency):
     symbols = list()
     get_symbols(statement, symbols)
     step_list = list()
     step_list.append([[deepcopy(statement)], StepTypes.START])
 
-    steps = [[convert_iff, StepTypes.IFF], [convert_if, StepTypes.IF], [distribute_not, StepTypes.NOT],
+    steps = []
+    
+    if adjacency:
+        steps = [[convert_iff, StepTypes.IFF], [convert_if, StepTypes.IF], [distribute_not, StepTypes.NOT],
              [flatten, StepTypes.FLATTEN], [distribute_and, StepTypes.AND], [flatten, StepTypes.FLATTEN],
              [perform_adjacency, StepTypes.ADJACENCY], [flatten, StepTypes.FLATTEN],
+             [perform_commutation, StepTypes.COMMUTATION],
+             [perform_idempotence_conjuncts, StepTypes.IDEMPOTENCE_CONJUNCT],
+             [perform_annihilation, StepTypes.ANNIHILATION],
+             [perform_idempotence_disjuncts, StepTypes.IDEMPOTENCE_DISJUNCT],
+             [perform_commutation_disjuncts, StepTypes.COMMUTATION]]
+    else:
+        steps = [[convert_iff, StepTypes.IFF], [convert_if, StepTypes.IF], [distribute_not, StepTypes.NOT],
+             [flatten, StepTypes.FLATTEN], [distribute_and, StepTypes.AND], [flatten, StepTypes.FLATTEN],
              [perform_commutation, StepTypes.COMMUTATION],
              [perform_idempotence_conjuncts, StepTypes.IDEMPOTENCE_CONJUNCT],
              [perform_annihilation, StepTypes.ANNIHILATION],

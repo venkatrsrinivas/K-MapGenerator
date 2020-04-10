@@ -9,7 +9,8 @@ from functools import partial
 from traceback import format_exc
 import tkinter.simpledialog
 import pickle
-
+import convert
+import equivCheck
 
 #Function For Changing Text in Statusbar (Bottom of Program)
 #Arguments: x = New Text To Put In Statusbar.
@@ -128,7 +129,28 @@ def check(kmap):
     if not result:
         messagebox.showerror("Error", msg)
     else:
-        messagebox.showinfo("Success!", "Your groupings were made correctly. You should have gotten " + msg + " as your simplified expression.")
+        print("Expected answer: " + msg)
+        user_answer = answer.get("1.0", END)
+        print("User's answer:" + user_answer)
+        correct_answer = msg
+
+        # Convert both answers to forseti notation
+        print("CONVERTING")
+        correct_answer = convert.main(correct_answer)
+        print("Expected answer: " + correct_answer)
+        user_answer = convert.main(user_answer)
+        print("User's answer:" + user_answer)
+        
+
+        # Use HLD to check whether user_answer is the same as correct_answer 
+        results = equivCheck.generate_equivalency(user_answer, correct_answer, False)
+        success = results[0]
+        print("Result 1:" + str(results[1]))
+        print("Result 2:" + str(results[2]))
+        if success:
+            messagebox.showinfo("Success!", "Your groupings were made correctly. You should have gotten " + msg + " as your simplified expression.")
+        else:
+            messagebox.showerror("Error", "Your groupings are correct, but your final expression is incorrect.")
 
 #Initialize The Window
 root = tk.Tk() 

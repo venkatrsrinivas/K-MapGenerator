@@ -566,7 +566,7 @@ def main(statement):
     countLines = 0;
     allKarnaughMaps = []; 
     #Invoke Conversion to CDNF Form:
-    outputFromHLDEquiv = equivCheck.generate_equivalency(str(inputValue), str(inputValue))
+    outputFromHLDEquiv = equivCheck.generate_equivalency(str(inputValue), str(inputValue), True)
     resultNormalForm = outputFromHLDEquiv[1]
     isContradiction = outputFromHLDEquiv[3]
     currentRoot = buildExpressionTreeData(resultNormalForm);

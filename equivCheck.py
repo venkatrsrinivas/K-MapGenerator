@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 import logical_equivalency
 import util
 
-def generate_equivalency(formula1, formula2):
+def generate_equivalency(formula1, formula2, adjacency):
     try:
-        equal, parse1, parse2, original = logical_equivalency.runner(formula1, formula2)
+        equal, parse1, parse2, original = logical_equivalency.runner(formula1, formula2, adjacency)
     except (SyntaxError, TypeError) as exception:
         print(str(exception))
         exit()
