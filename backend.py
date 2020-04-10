@@ -1,6 +1,7 @@
-import sys;
-import math;
-import equivCheck;
+import sys
+import math
+import equivCheck
+import convert
 
 class RegularExpressionTreeNode():
     #Constructor For RegularExpressionTreeNode:
@@ -558,7 +559,10 @@ class KarnaughMap():
         expression = self.getExpressionFromGroupings()
         return True, expression
 
-def main(inputValue): 
+def main(statement): 
+    # Process the statement the user inputted
+    inputValue = convert.main(statement)
+
     countLines = 0;
     allKarnaughMaps = []; 
     #Invoke Conversion to CDNF Form:
@@ -584,7 +588,7 @@ def main(inputValue):
     print("Done w/ Karnaugh Map.");
     countLines += 1;
     allKarnaughMaps.append(currentKMap);
-    return allKarnaughMaps[0], variables, outputFromHLDEquiv[5]
+    return allKarnaughMaps[0], variables, statement # outputFromHLDEquiv[5]
 
 if __name__ == '__main__':
     if(len(sys.argv) >= 2):     

@@ -9,7 +9,7 @@ from functools import partial
 from traceback import format_exc
 import tkinter.simpledialog
 import pickle
-import convert
+
 
 #Function For Changing Text in Statusbar (Bottom of Program)
 #Arguments: x = New Text To Put In Statusbar.
@@ -190,9 +190,7 @@ All operators are either unary (not) or binary (and, or, if, iff), and there is 
 ''', parent=root, initialvalue="open")
 
 if statement != "open":
-    # Process the statement the user inputted
-    convertStatement = convert.main(statement)
-    currentKMap, variables, original = backend.main(convertStatement)
+    currentKMap, variables, original = backend.main(statement)
 else:
     # Load K-Map from file. The K-Map is serialized as a python object into a file in the form of a pickle.
     filename = askopenfilename(filetypes=(("K-Map Files", ".kmap"),), defaultextension=".kmap")
