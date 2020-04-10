@@ -161,15 +161,24 @@ def infixToPostfix(infix):
 
 #Convert Infix Notation STR To Prefix Notation STR:
 def convertInfixToPrefix(infix):
+	infix = infix.replace(" ", "")	
+	infix = formatSpecialOperators(infix)
 	infix = infix[::-1]
+	print(infix)
 	for k in range(0, len(infix)):
 		if(infix[k] == '('):
 			infix = infix[:k] + ')' + infix[k+1:]
 		elif(infix[k] == ')'):
-			infix = infix[:k] + '(' + infix[k+1:]			
-	prefix = infixToPostfix(infix.replace(" ", "")) 
+			infix = infix[:k] + '(' + infix[k+1:]		
+	prefix = infixToPostfix(infix) 
 	prefix = prefix[::-1]
 	return prefix
+
+#Formatting For Biconditional/Conditional Operators:
+def formatSpecialOperators(infix):
+	infix = infix.replace("<->", "=")
+	infix = infix.replace("->", ">")
+	return infix
 
 #Convert To Tree:
 def convertToTree(postfix):
@@ -227,7 +236,6 @@ def main(inputValue):
 	finalExpression = currentRoot.convertToHLD()
 	print(finalExpression)
 	return finalExpression
-
 
 if __name__ == '__main__':
 	if(len(sys.argv) >= 2):     
