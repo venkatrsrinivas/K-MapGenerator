@@ -20,7 +20,7 @@ class TreeNode(object):
 	#Basic Helper Function To Print Subtree Rooted At self.
 	def printTree(self):
 		if(self == None):
-			return;
+			return
 		print(self.value)
 		self.left.print()
 		self.right.print()
@@ -28,9 +28,9 @@ class TreeNode(object):
 	def convertToHLD(self):
 		#Base Case:
 		if(self == None):
-			return "";
+			return ""
 		#Initialize Current Output Expression:
-		output = "";
+		output = ""
 		#Case 1: Operator.
 		if(isOperator(self.value)):
 			#Respective STR Based On Operator.
@@ -51,7 +51,7 @@ class TreeNode(object):
 			if(self.value != "~"):
 				output += self.right.convertToHLD()
 			if(self.value != "~"):
-				output += ", ";
+				output += ", "
 			output += self.left.convertToHLD()
 			output += ")"
 		else:
@@ -220,11 +220,13 @@ def convertToTree(postfix):
 
 #Main Driver Code:
 def main(inputValue):
-	currentExpression = str(sys.argv[1])
+	currentExpression = inputValue
 	prefixValue = convertInfixToPrefix(currentExpression)
 	print("Prefix Expression:", prefixValue)
 	currentRoot = convertToTree(prefixValue[::-1])
-	print(currentRoot.convertToHLD())
+	finalExpression = currentRoot.convertToHLD()
+	print(finalExpression)
+	return finalExpression
 
 
 if __name__ == '__main__':
