@@ -6,6 +6,8 @@ Downnload the latest version of Python 3 to your computer from python.org. The p
 
 You must also install `forseti`, a parsing library used by this program. Open a terminal window and run `pip install forseti` on Windows or `pip3 install forseti` on Mac/Linux.
 
+This application also requires Tkinter/Tcl version 8.6+ for 4-variable K-Maps (if you are not going to be working with 4-variable K-Maps, earlier versions should work). On Mac, you may have to reinstall Python as described at https://www.reddit.com/r/Python/comments/54x1mu/help_with_installing_tkinter_86_on_mac/. 
+
 Download all the files in this repo to your computer.
 
 # Running K-Map Generator
