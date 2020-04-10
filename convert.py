@@ -146,7 +146,7 @@ def infixToPostfix(infix):
 		else:
 			#Check For Non-Alpha Characters:
 			if(not(token.isalpha())):
-				print("Not Alpha Not Space.")
+				print("Not Alpha Not Space:", token, ".")
 				return "ERROR"
 			output += token
 	#Append All Remaining Characters From opStack.
@@ -162,6 +162,7 @@ def infixToPostfix(infix):
 #Convert Infix Notation STR To Prefix Notation STR:
 def convertInfixToPrefix(infix):
 	infix = infix.replace(" ", "")	
+	infix = infix.replace("\n", "")
 	infix = formatSpecialOperators(infix)
 	infix = infix[::-1]
 	print(infix)
