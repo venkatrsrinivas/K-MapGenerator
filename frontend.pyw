@@ -136,10 +136,8 @@ def check(kmap):
 
         # Convert both answers to forseti notation
         print("CONVERTING")
-        print(correct_answer)
         correct_answer = convert.main(correct_answer)
         print("Expected answer: " + correct_answer)
-        print(user_answer)
         user_answer = convert.main(user_answer)
         print("User's answer:" + user_answer)
         

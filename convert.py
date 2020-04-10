@@ -165,7 +165,6 @@ def convertInfixToPrefix(infix):
 	infix = infix.replace("\n", "")
 	infix = formatSpecialOperators(infix)
 	infix = infix[::-1]
-	print(infix)
 	for k in range(0, len(infix)):
 		if(infix[k] == '('):
 			infix = infix[:k] + ')' + infix[k+1:]
