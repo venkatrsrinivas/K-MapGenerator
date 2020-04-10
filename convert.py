@@ -166,10 +166,11 @@ def convertPrefixToTree(prefix):
 		elif(isOperator(prefix[k]) and prefix[k] == "~"):
 			prevOne = None
 			if(not(convertToTree.isEmpty())):
-				prevOne = convertToTree.top()
+				prevOne = convertToTree.peek()
 				convertToTree.pop()
 			currentNode = TreeNode(prefix[k])
 			currentNode.left = prevOne 
+			convertToTree.push(currentNode)
 		else:
 			currentNode = TreeNode(prefix[k])
 			convertToTree.push(currentNode)
