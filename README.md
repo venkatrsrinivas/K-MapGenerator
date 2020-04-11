@@ -94,7 +94,7 @@ Once you have created all of your groupings and are sure they are correct, use t
 
 Write your simplified logic expression in the "Your Answer" box, using the same syntax described earlier, then click the Check Answer button. The Check Answer button will first verify that you created your groupings correctly; if you did not, it will tell you to correct your groupings. If your groupings were made correctly, the program will then check whether the answer you inputted matches the groupings you created. If your expression can be simplified more, or if it is not logically equivalent to the original expression, the program will throw an error message; otherwise, it will declare that your answer is correct.
 
-![Figure 11](https://github.com/venkatrsrinivas/K-MapGenerator/blob/master/screenshots/11.png)
+![Figure 11](https://github.com/venkatrsrinivas/K-MapGenerator/blob/master/screenshots/12.png)
 
 ## Saving Files
 To save your current progress, or save the solved K-Map after you have completed it, go to the File menu and click Save.
