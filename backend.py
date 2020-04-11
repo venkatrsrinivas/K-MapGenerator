@@ -289,37 +289,37 @@ class KarnaughMap():
                 secondX2, secondY2 = br2
                 remove = []
                 if firstX1 == secondX1 and firstX2 == secondX2 and abs(firstY1-secondY1) <= 1 and abs(firstY2-secondY2) <= 1:
-                    print("Horizontal Combine")
+                    # print("Horizontal Combine")
                     newGrouping = ((firstX1, min(firstY1, secondY1)), (firstX2, max(firstY2, secondY2)))
                     remove.append(first)
                     remove.append(second)
                 elif firstX1 == secondX1 and firstX2 == secondX2 and ((secondY2 == self.columns-1 and firstY1 == 0) or (firstY2 == self.columns-1 and secondY1 == 0)):
-                    print("Horizontal Combine with Wraparound")
+                    # print("Horizontal Combine with Wraparound")
                     newGrouping = ((firstX1, max(firstY1, secondY1)), (firstX2, min(firstY2, secondY2)))
                     remove.append(first)
                     remove.append(second)
                 elif firstY1 == secondY1 and firstY2 == secondY2 and abs(firstX1-secondX1) <= 1 and abs(firstX2-secondX2) <= 1:
-                    print("Vertical Combine")
+                    # print("Vertical Combine")
                     newGrouping = ((min(firstX1, secondX1), firstY1), (max(firstX2, secondX2), firstY2))
                     remove.append(first)
                     remove.append(second)
                 elif firstY1 == secondY1 and firstY2 == secondY2 and ((secondX2 == self.rows-1 and firstX1 == 0) or (firstX2 == self.rows-1 and secondX1 == 0)):
-                    print("Vertical Combine with Wraparound")
+                    # print("Vertical Combine with Wraparound")
                     newGrouping = ((max(firstX1, secondX1), firstY1), (min(firstX2, secondX2), firstY2))
                     remove.append(first)
                     remove.append(second)
                 else:
                     if firstX1 <= secondX1 and firstY1 <= secondY1 and firstX2 >= secondX2 and firstY2 >= secondY2:
-                        print("First grouping contains second")
+                        # print("First grouping contains second")
                         newGrouping = first
                         remove.append(second)
                     elif firstX1 >= secondX1 and firstY1 >= secondY1 and firstX2 <= secondX2 and firstY2 <= secondY2:
-                        print("Second grouping contains first")
+                        # print("Second grouping contains first")
                         newGrouping = second
                         remove.append(first)
                     else:
                         raise Exception("Invalid Grouping")
-            print("Merging into new grouping: " + str(newGrouping))
+            # print("Merging into new grouping: " + str(newGrouping))
             self.addGrouping(newGrouping[0], newGrouping[1], merge)
             if merge:
                 for grouping in remove:
@@ -391,7 +391,7 @@ class KarnaughMap():
             if numVars > 3:
                 var4val = var4[y1][x1]
             if x1 <= x2 and y1 <= y2:
-                print("normal")
+                # print("normal")
                 # normal grouping, no wraparounds
                 for y in range(y1, y2+1):
                     for x in range(x1, x2+1):
@@ -405,15 +405,15 @@ class KarnaughMap():
                             var4val = -1
                         
             elif x1 >= x2 and y1 <= y2:
-                print("horiz")
+                # print("horiz")
                 # horizontal wraparound grouping 
                 for y in range(y1, y2+1):
                     for x in range(x1, self.columns):
-                        print(str(y) + "," + str(x))
+                        # print(str(y) + "," + str(x))
                         if var1val != None and var1[y][x] != var1val:
                             var1val = -1
                         if var2val != None and var2[y][x] != var2val:
-                            print("Q changed from" + str(var2val) + " to " + str(var2[y][x]))
+                            # print("Q changed from" + str(var2val) + " to " + str(var2[y][x]))
                             var2val = -1
                         if var3val != None and var3[y][x] != var3val:
                             var3val = -1
@@ -430,7 +430,7 @@ class KarnaughMap():
                             var4val = -1
             elif x1 <= x2 and y1 >= y2:
                 # vertical wraparound grouping 
-                print("vert")
+                # print("vert")
                 for y in range(y1, self.rows):
                     for x in range(x1, x2+1):
                         if var1val != None and var1[y][x] != var1val:
@@ -455,10 +455,10 @@ class KarnaughMap():
                 # what in the world??
                 return False, "Internal error, please check manually"
 
-            print(var1val)
-            print(var2val)
-            print(var3val)
-            print(var4val)
+            # print(var1val)
+            # print(var2val)
+            # print(var3val)
+            # print(var4val)
 
             # This array stores all the conjuncts for this disjunct
             conjunctions = []
@@ -491,7 +491,7 @@ class KarnaughMap():
         final = ""
         for disjunction in disjunctions:
             final = final + " | " + "(" + disjunction + ")"
-        print(final[3:])
+        # print(final[3:])
         return final[3:]
 
     # This function is responsible for checking a user's answer.
@@ -514,8 +514,8 @@ class KarnaughMap():
                     finally:
                         if success != "failed":
                             # we were able to merge two independent groupings, which means user did not merge some groupings
-                            print(x)
-                            print(y)
+                            # print(x)
+                            # print(y)
                             valid = False
                             return False, "Two or more groupings can be merged."
 
@@ -566,26 +566,26 @@ def main(statement):
     countLines = 0;
     allKarnaughMaps = []; 
     #Invoke Conversion to CDNF Form:
-    outputFromHLDEquiv = equivCheck.generate_equivalency(str(inputValue), str(inputValue))
+    outputFromHLDEquiv = equivCheck.generate_equivalency(str(inputValue), str(inputValue), True)
     resultNormalForm = outputFromHLDEquiv[1]
     isContradiction = outputFromHLDEquiv[3]
     currentRoot = buildExpressionTreeData(resultNormalForm);
     if(countLines != 0):
         print("");
-    print(resultNormalForm)
+    """ print(resultNormalForm)
     print("Pre-Order Traversal:");
     printPreOrder(currentRoot);
     print("Done with Pre-Order Traversal.\n");
     print("Get All Satisfying Values:");
     print(currentRoot.getSatisfyingValues(isContradiction));
     print("Computed All Satisfying Values.\n");
-    print("Total # Variables:");
+    print("Total # Variables:"); """
     variables = currentRoot.getDistinctVariables()
-    print(variables);
+    # print(variables);
     currentKMap = KarnaughMap(currentRoot.getDistinctVariables());
     currentKMap.setOneValues(currentRoot.getSatisfyingValues(isContradiction));
     currentKMap.printMatrix();
-    print("Done w/ Karnaugh Map.");
+    # print("Done w/ Karnaugh Map.");
     countLines += 1;
     allKarnaughMaps.append(currentKMap);
     return allKarnaughMaps[0], variables, statement # outputFromHLDEquiv[5]

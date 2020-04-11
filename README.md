@@ -4,7 +4,9 @@ The rest of this guide assumes that you know what K-Maps are and how they are us
 # Installation
 Downnload the latest version of Python 3 to your computer from python.org. The program was built and tested using Python 3.8.
 
-You must also install `forseti`, a parsing library used by this program. Open a terminal window and run `pip install forseti` on Windows or `pip3 install forseti` on Mac/Linux.
+You must also install `forseti`, a parsing library used by this program, and `pythonds`. Open a terminal window and run `pip install forseti pythonds` on Windows or `pip3 install forseti pythonds` on Mac/Linux.
+
+This application also requires Tkinter/Tcl version 8.6+ for 4-variable K-Maps (if you are not going to be working with 4-variable K-Maps, earlier versions should work). On Mac, you may have to reinstall Python as described at https://www.reddit.com/r/Python/comments/54x1mu/help_with_installing_tkinter_86_on_mac/. 
 
 Download all the files in this repo to your computer.
 
@@ -15,16 +17,15 @@ To run the program, simply double-click on the `frontend.pyw` file.
 ## Specifying an Expression Manually
 When the program first launches, you will be greeted with a dialogue box that asks you to enter an expression. The K-Map Generator will help you create a K-Map for this expression and use it to simplify this expression.
 
-K-Map Generator uses a functional format for inputting logical formulas. This is the base identity for inputs:
-```
-A
-not(A)
-and(A, B)
-or(A, B)
-if(A, B)
-iff(A, B)
-```
-where `A` and `B` can either be atomic statements or a functional operator. All operators are either unary (not) or binary (and, or, if, iff) and there is no support for a generalized notation. This means that ```and(A, B, C)``` will thrown an error. An example of a valid input is `iff(and(not(P),Q),and(R,S))`.
+The following syntax is used for inputting expressions:
+
+AND = &
+OR = |
+NOT = ~
+CONDITIONAL = ->
+BICONDITIONAL = <->
+
+An example of a valid input is `((~P & Q) <-> (R & S))`.
 
 Expressions with more than 4 variables are not supported at this time.
 
@@ -44,7 +45,7 @@ Let's take some time to explore this interface.
 
 - At the top of the screen, the program prints the expression that you entered in a human-readable format. 
 - Directly below this, in the center of the screen, is the K-Map. The program labels the cells in the K-Map for you.
-- To the left of the K-Map is an Instructions button, which displays instructions for how to use the program.
+- To the left of the K-Map is an Instructions button, which refers the user to this document.
 - To the right of the K-Map is a list of all the groupings you have created on your K-Map. Currently, we have not created any groupings, so this list is empty.
 - Underneath the K-Map, there are entry fields for creating and merging groupings. We will discuss this in more detail later.
 - Finally, at the bottom, there is a text field where you can enter your final answer (that is, the final expression that you get after simplifying the original expression using the K-Map). There is also a Check Answer button, which allows you to check your work. This will be discussed in more detail later.
@@ -91,7 +92,9 @@ The following rules apply to groupings:
 ## Checking Final Answer
 Once you have created all of your groupings and are sure they are correct, use them to come up with a simplified logical expression. If you are unsure how to do this, read the following guide on K-Maps: https://en.wikichip.org/wiki/karnaugh_map
 
-Write your simplified logic expression in the "Your Answer" box, then click the Check Answer button. The Check Answer button will first verify that you created your groupings correctly; if you did not, it will tell you to correct your groupings. If your groupings were made correctly, the program will present you with the correct simplified expression that you should have gotten. You can use this to self-check your answer.
+Write your simplified logic expression in the "Your Answer" box, using the same syntax described earlier, then click the Check Answer button. The Check Answer button will first verify that you created your groupings correctly; if you did not, it will tell you to correct your groupings. If your groupings were made correctly, the program will then check whether the answer you inputted matches the groupings you created. If your expression can be simplified more, or if it is not logically equivalent to the original expression, the program will throw an error message; otherwise, it will declare that your answer is correct.
+
+![Figure 11](https://github.com/venkatrsrinivas/K-MapGenerator/blob/master/screenshots/11.png)
 
 ## Saving Files
 To save your current progress, or save the solved K-Map after you have completed it, go to the File menu and click Save.
