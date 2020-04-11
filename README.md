@@ -11,7 +11,7 @@ This application also requires Tkinter/Tcl version 8.6+ for 4-variable K-Maps (i
 Download all the files in this repo to your computer.
 
 # Running K-Map Generator
-To run the program, simply double-click on the `frontend.pyw` file.
+To run the program, simply run the `frontend.pyw` file.
 
 # Using the program
 ## Specifying an Expression Manually
