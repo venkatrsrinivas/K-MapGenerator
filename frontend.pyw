@@ -342,9 +342,11 @@ Answer''', font=('Arial', 11), command=partial(check, currentKMap))
 wum.place(relx=.955, rely=.985, anchor=S)
 
 submitMerge = Button(root, text="Instructions", command=instructions)
-submitMerge.place(relx=.15, rely=.35, anchor=W)
+submitMerge.place(relx=.14, rely=.35, anchor=W)
 
 grouping_text_id = canvas.create_text(630, 200, text="Groupings:", font=('Arial', 12))
+
+canvas.create_text(150, 275, text="For coordinates, (0,0) represents \nthe upper-left corner.", font=('Arial', 10))
 
 redrawKmap() # If kmap was loaded into a file, we must color the groupings. In general, this is just a good idea.
 
