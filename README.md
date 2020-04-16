@@ -83,6 +83,10 @@ The following rules apply to groupings:
 
 ![Figure 9](https://github.com/venkatrsrinivas/K-MapGenerator/blob/master/screenshots/9.png)
 
+Wrapping around corners is also supported for 3-variable and 4-variable expressions, as described in https://en.wikichip.org/wiki/karnaugh_map (not supported for 1 and 2-variable expressions as it does not make sense to wrap around corners for K-Maps that small):
+
+![Source: https://en.wikichip.org/wiki/karnaugh_map](https://en.wikichip.org/w/images/f/f6/kmap_rules_-_wrapping_around.svg)
+
 4. Groupings cannot be diagonal
 5. Groupings can overlap with each other
 6. All 1's in a K-Map must belong in a grouping. There cannot be any ungrouped 1's left in the K-Map. This includes single cells containing a 1; in this case, you must create a grouping that contains only 1 cell, as shown below.
