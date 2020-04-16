@@ -238,6 +238,13 @@ class KarnaughMap():
         y2,x2 = bottomRight
         valid = True
 
+        # Check for corner wraparound case
+
+
+        if x2 == 0 and y2 == 0 and x1 == self.columns-1 and y1 == self.rows-1 and self.matrix[y2][x2] == 1 and self.matrix[y2][x1] == 1 and self.matrix[y1][x2] == 1 and self.matrix[y1][x1] == 1:
+            self.groupings.append("4corners")
+            return "Success"
+
         if x1 > self.columns - 1 or x2 > self.columns - 1 or y1 > self.rows - 1 or y2 > self.rows - 1:
              raise Exception("Indices are greater than bounds")
              valid = False
@@ -280,15 +287,20 @@ class KarnaughMap():
         tl1, br1 = first
         tl2, br2 = second
         newGrouping = first
+        remove = []
         if first in self.groupings and second in self.groupings:
             if first == second:
                 raise Exception("Both groupings are the same")
+            # 4 corner wraparound; currently we have 2 horizontal wraparounds
+            elif (tl1 == (0, self.columns-1) and br1 == (0,0) and tl2 == (self.rows-1, self.columns-1) and br2 == (self.rows-1,0)) or (tl2 == (0, self.columns-1) and br2 == (0,0) and tl1 == (self.rows-1, self.columns-1) and br1 == (self.rows-1,0)) or (tl1 == (self.rows-1, 0) and br1 == (0,0) and tl2 == (self.rows-1, self.columns-1) and br2 == (0,self.columns-1)) or (tl2 == (self.rows-1, 0) and br2 == (0,0) and tl1 == (self.rows-1, self.columns-1) and br1 == (0,self.columns-1)):
+                newGrouping = ((self.rows-1, self.columns-1), (0, 0))
+                remove.append(first)
+                remove.append(second)
             else:
                 firsty1, firstx1 = tl1
                 firsty2, firstx2 = br1
                 secondy1, secondx1 = tl2
                 secondy2, secondx2 = br2
-                remove = []
                 if firsty1 == secondy1 and firsty2 == secondy2 and abs(firstx1-secondx1) <= 1 and abs(firstx2-secondx2) <= 1:
                     # print("Horizontal Combine")
                     newGrouping = ((firsty1, min(firstx1, secondx1)), (firsty2, max(firstx2, secondx2)))
