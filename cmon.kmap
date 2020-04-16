@@ -1,1 +1,0 @@
-{"original": "(~A & ~B & ~C & ~D) | (A & ~B & ~C & ~D) | (~A & ~B & C & ~D) | (A & ~B & C & ~D)", "groupings": ["4corners"], "useranswer": "~B & ~D\n"}
