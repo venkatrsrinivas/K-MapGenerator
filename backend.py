@@ -386,6 +386,13 @@ class KarnaughMap():
         # Iterate through each grouping. For each grouping, we detect which variables change across the grouping
         # and which ones stay the same
         for grouping in self.groupings:
+            if grouping == "4corners":
+                if numVars == 3:
+                    disjunctions.append("~" + self.allExpressionVariables[1])
+                else:
+                    disjunctions.append("~" + self.allExpressionVariables[1] + " & " + "~" + self.allExpressionVariables[3])
+                continue
+
             var1val = None
             var2val = None
             var3val = None
@@ -541,6 +548,9 @@ class KarnaughMap():
                     # find a grouping that contains this cell 
                     contained = False
                     for grouping in self.groupings:
+                        if grouping == "4corners" and ((x == 0 and y == 0) or (x == self.columns-1 and y == 0) or (x == 0 and y == self.rows-1) or (x == self.columns-1 and y == self.rows-1)):
+                            contained = True
+                            break
                         y1 = grouping[0][0]
                         x1 = grouping[0][1]
                         y2 = grouping[1][0]

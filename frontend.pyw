@@ -232,10 +232,13 @@ else:
     currentKMap, variables, original = backend.main(data["original"])
     tmpgroupings = []
     for grouping in list(data["groupings"]):
-        parts = []
-        for part in grouping:
-            parts.append(tuple(part))
-        tmpgroupings.append(tuple(parts))
+        if grouping == "4corners":
+            tmpgroupings.append(grouping)
+        else:
+            parts = []
+            for part in grouping:
+                parts.append(tuple(part))
+            tmpgroupings.append(tuple(parts))
     groupings = tmpgroupings
     currentKMap.groupings = groupings
     ans = data["useranswer"]
