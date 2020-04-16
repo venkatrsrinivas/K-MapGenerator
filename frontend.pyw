@@ -8,7 +8,7 @@ from tkinter import *
 from functools import partial
 from traceback import format_exc
 import tkinter.simpledialog
-import pickle
+import json
 import convert
 import equivCheck
 
@@ -23,11 +23,11 @@ def credits():
     tk.messagebox.showinfo("Credits", "Contributors:\nVenkat Srinivas\nAlexandra Hsueh\nTobias Park\n\nhttps://github.com/venkatrsrinivas/K-MapGenerator")
 
 #Save K-Map File In Program
-def save(kmap, vars, orig): 
+def save(): 
     filename = asksaveasfilename(filetypes=(("K-Map Files", ".kmap"),), defaultextension=".kmap")
-    file = open(filename, 'wb')
-    data = [kmap, vars, orig, answer.get("1.0", END)]
-    pickle.dump(data, file)
+    file = open(filename, 'w')
+    data = {'original': original, 'groupings': currentKMap.groupings, 'useranswer': answer.get("1.0", END)}
+    json.dump(data, file)
     file.close()
 
 def instructions():
@@ -214,17 +214,22 @@ if statement != "open":
 else:
     # Load K-Map from file. The K-Map is serialized as a python object into a file in the form of a pickle.
     filename = askopenfilename(filetypes=(("K-Map Files", ".kmap"),), defaultextension=".kmap")
-    file = open(filename, 'rb')
-    data = pickle.load(file)
-    # print(len(data))
-    currentKMap = data[0]
-    variables = data[1]
-    original = data[2]
-    ans = data[3]
+    file = open(filename, 'r')
+    data = json.load(file)
+    currentKMap, variables, original = backend.main(data["original"])
+    tmpgroupings = []
+    for grouping in list(data["groupings"]):
+        parts = []
+        for part in grouping:
+            parts.append(tuple(part))
+        tmpgroupings.append(tuple(parts))
+    groupings = tuple(tmpgroupings)
+    currentKMap.groupings = groupings
+    ans = data["useranswer"]
     # print(original)
 
 # Save menu must be added here, otherwise all of the variables in the partial are set to None
-filemenu.add_command(label="Save", command=partial(save, currentKMap, variables, original))
+filemenu.add_command(label="Save", command=save)
 
 # Print the original expression on the screen
 canvas.create_text(400, 15, text="Expression: " + str(original), font=('Arial', 18))
