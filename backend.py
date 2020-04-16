@@ -187,12 +187,12 @@ class KarnaughMap():
         # Takes in the coordinates and determines if the values
         # in the grouping is valid
         # Returns True for good and False for bad
-        x1,y1 = topLeft
-        x2,y2 = bottomRight
+        y1,x1 = topLeft
+        y2,x2 = bottomRight
         val = 1
         good = True
-        for k in range(x1, x2+1):
-            for m in range(y1, y2+1):
+        for k in range(y1, y2+1):
+            for m in range(x1, x2+1):
                 if not val == self.matrix[k][m]:
                     good = False
                     break
@@ -205,13 +205,13 @@ class KarnaughMap():
     def addWrapUpGrouping(self, topLeft, bottomRight):
          # this is the case when BottomRight is Above Top Left
          # splits the grouping and determines validity of each half
-         x1,y1 = topLeft
-         x2,y2 = bottomRight
+         y1,x1 = topLeft
+         y2,x2 = bottomRight
          val = 1
          good = True
-         L2 = (0, y1)
-         R2 = (self.rows - 1, y2)
-         numberOfBoxes = (y2 + 1 - y1)*(x2 + 1) + (y2 + 1 - y1)*(self.rows - x1)
+         L2 = (0, x1)
+         R2 = (self.rows - 1, x2)
+         numberOfBoxes = (x2 + 1 - x1)*(y2 + 1) + (x2 + 1 - x1)*(self.rows - y1)
          # groupings must be a power of 2
          if not isPowerOfTwo(numberOfBoxes):
                raise Exception("Bad grouping: Number of Boxes is not a power of two")
@@ -220,13 +220,13 @@ class KarnaughMap():
 
     def addWrapAcrossGrouping(self, topLeft, bottomRight):
           # This is the case when Top Left is to the right of Bottom Right
-         x1,y1 = topLeft
-         x2,y2 = bottomRight
+         y1,x1 = topLeft
+         y2,x2 = bottomRight
          val = 1
          good = True
-         L2 = (x1, 0)
-         R2 = (x2, self.columns - 1)
-         numberOfBoxes = (y2 + 1)*(x2 + 1 - x1) + (self.columns - y1)*(x2 + 1 - x1)
+         L2 = (y1, 0)
+         R2 = (y2, self.columns - 1)
+         numberOfBoxes = (x2 + 1)*(y2 + 1 - y1) + (self.columns - x1)*(y2 + 1 - y1)
          # groupings must be a power of 2
          if not isPowerOfTwo(numberOfBoxes):
             raise Exception("Bad grouping: Number of Boxes is not a power of two")
@@ -234,26 +234,27 @@ class KarnaughMap():
          return self.addNormGrouping(L2, bottomRight) and self.addNormGrouping(topLeft, R2)
 
     def addGrouping(self, topLeft, bottomRight, create):
-        x1,y1 = topLeft
-        x2,y2 = bottomRight
+        y1,x1 = topLeft
+        y2,x2 = bottomRight
         valid = True
-        if y1 > self.columns - 1 or y2 > self.columns - 1 or x1 > self.rows - 1 or x2 > self.rows - 1:
+
+        if x1 > self.columns - 1 or x2 > self.columns - 1 or y1 > self.rows - 1 or y2 > self.rows - 1:
              raise Exception("Indices are greater than bounds")
              valid = False
              return
-        if y1 < 0 or y2 < 0 or x1 < 0 or x2 < 0:
+        if x1 < 0 or x2 < 0 or y1 < 0 or y2 < 0:
              raise Exception("An index is less than zero")
              valid = False
              return
-        if x1 <= x2 and y1 <= y2:
-            numberOfBoxes = (x2 + 1 - x1)*(y2 + 1 - y1)
+        if y1 <= y2 and x1 <= x2:
+            numberOfBoxes = (y2 + 1 - y1)*(x2 + 1 - x1)
             if not isPowerOfTwo(numberOfBoxes):
                 valid = False
                 raise Exception("Bad grouping: Number of Boxes is not a power of two")
             valid = self.addNormGrouping(topLeft, bottomRight)
-        elif x1 > x2 and y1 <= y2:
+        elif y1 > y2 and x1 <= x2:
             valid = self.addWrapUpGrouping(topLeft, bottomRight)
-        elif x1 <= x2 and y1 > y2:
+        elif y1 <= y2 and x1 > x2:
             valid = self.addWrapAcrossGrouping(topLeft, bottomRight)
         else:
             # We can't have Top left be to right and below Bottom Right
@@ -266,8 +267,8 @@ class KarnaughMap():
         return "Success"
 
     def removeGrouping(self, topLeft, bottomRight):
-        x1,y1 = topLeft
-        x2,y2 = bottomRight
+        y1,x1 = topLeft
+        y2,x2 = bottomRight
         group = (topLeft, bottomRight)
         if group not in self.groupings:
             raise Exception("Grouping does not exist")
@@ -283,37 +284,37 @@ class KarnaughMap():
             if first == second:
                 raise Exception("Both groupings are the same")
             else:
-                firstX1, firstY1 = tl1
-                firstX2, firstY2 = br1
-                secondX1, secondY1 = tl2
-                secondX2, secondY2 = br2
+                firsty1, firstx1 = tl1
+                firsty2, firstx2 = br1
+                secondy1, secondx1 = tl2
+                secondy2, secondx2 = br2
                 remove = []
-                if firstX1 == secondX1 and firstX2 == secondX2 and abs(firstY1-secondY1) <= 1 and abs(firstY2-secondY2) <= 1:
+                if firsty1 == secondy1 and firsty2 == secondy2 and abs(firstx1-secondx1) <= 1 and abs(firstx2-secondx2) <= 1:
                     # print("Horizontal Combine")
-                    newGrouping = ((firstX1, min(firstY1, secondY1)), (firstX2, max(firstY2, secondY2)))
+                    newGrouping = ((firsty1, min(firstx1, secondx1)), (firsty2, max(firstx2, secondx2)))
                     remove.append(first)
                     remove.append(second)
-                elif firstX1 == secondX1 and firstX2 == secondX2 and ((secondY2 == self.columns-1 and firstY1 == 0) or (firstY2 == self.columns-1 and secondY1 == 0)):
+                elif firsty1 == secondy1 and firsty2 == secondy2 and ((secondx2 == self.columns-1 and firstx1 == 0) or (firstx2 == self.columns-1 and secondx1 == 0)):
                     # print("Horizontal Combine with Wraparound")
-                    newGrouping = ((firstX1, max(firstY1, secondY1)), (firstX2, min(firstY2, secondY2)))
+                    newGrouping = ((firsty1, max(firstx1, secondx1)), (firsty2, min(firstx2, secondx2)))
                     remove.append(first)
                     remove.append(second)
-                elif firstY1 == secondY1 and firstY2 == secondY2 and abs(firstX1-secondX1) <= 1 and abs(firstX2-secondX2) <= 1:
+                elif firstx1 == secondx1 and firstx2 == secondx2 and abs(firsty1-secondy1) <= 1 and abs(firsty2-secondy2) <= 1:
                     # print("Vertical Combine")
-                    newGrouping = ((min(firstX1, secondX1), firstY1), (max(firstX2, secondX2), firstY2))
+                    newGrouping = ((min(firsty1, secondy1), firstx1), (max(firsty2, secondy2), firstx2))
                     remove.append(first)
                     remove.append(second)
-                elif firstY1 == secondY1 and firstY2 == secondY2 and ((secondX2 == self.rows-1 and firstX1 == 0) or (firstX2 == self.rows-1 and secondX1 == 0)):
+                elif firstx1 == secondx1 and firstx2 == secondx2 and ((secondy2 == self.rows-1 and firsty1 == 0) or (firsty2 == self.rows-1 and secondy1 == 0)):
                     # print("Vertical Combine with Wraparound")
-                    newGrouping = ((max(firstX1, secondX1), firstY1), (min(firstX2, secondX2), firstY2))
+                    newGrouping = ((max(firsty1, secondy1), firstx1), (min(firsty2, secondy2), firstx2))
                     remove.append(first)
                     remove.append(second)
                 else:
-                    if firstX1 <= secondX1 and firstY1 <= secondY1 and firstX2 >= secondX2 and firstY2 >= secondY2:
+                    if firsty1 <= secondy1 and firstx1 <= secondx1 and firsty2 >= secondy2 and firstx2 >= secondx2:
                         # print("First grouping contains second")
                         newGrouping = first
                         remove.append(second)
-                    elif firstX1 >= secondX1 and firstY1 >= secondY1 and firstX2 <= secondX2 and firstY2 <= secondY2:
+                    elif firsty1 >= secondy1 and firstx1 >= secondx1 and firsty2 <= secondy2 and firstx2 <= secondx2:
                         # print("Second grouping contains first")
                         newGrouping = second
                         remove.append(first)

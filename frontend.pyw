@@ -223,7 +223,7 @@ else:
         for part in grouping:
             parts.append(tuple(part))
         tmpgroupings.append(tuple(parts))
-    groupings = tuple(tmpgroupings)
+    groupings = tmpgroupings
     currentKMap.groupings = groupings
     ans = data["useranswer"]
     # print(original)
