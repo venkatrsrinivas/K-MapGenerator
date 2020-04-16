@@ -57,47 +57,60 @@ def redrawKmap():
         grouping_list = grouping_list + str(grouping) + "\n"
         groupingsmap[colors[color]] = grouping
         thisgrouping = [] # contains all of the rectangular regions in this grouping
-        if str(grouping[0][0])[0] == '(':
-            # print("Nested grouping")
-            # Nested, this grouping is actually two merged rectangular groupings and may actually be non-rectangular.
-            # So, we will split it into its rectangular components.
-            thisgrouping.append(grouping[0])
-            thisgrouping.append(grouping[1])
+
+        # Check for special corner wraparound case
+        if grouping == "4corners":
+            w.tag_add("upperleft", "1.0", "1.1")
+            w.tag_add("upperright", "1." + str(currentKMap.columns*2-2), "1." + str(currentKMap.columns*2))
+            w.tag_add("lowerleft", str(currentKMap.rows) + ".0", str(currentKMap.rows) + ".1")
+            w.tag_add("lowerright", str(currentKMap.rows) + "." + str(currentKMap.columns*2-2), str(currentKMap.rows) + ".1" + str(currentKMap.columns*2-2))
+
+            w.tag_config("upperleft", background=colors[color], foreground="white")
+            w.tag_config("lowerleft", background=colors[color], foreground="white")
+            w.tag_config("upperright", background=colors[color], foreground="white")
+            w.tag_config("lowerright", background=colors[color], foreground="white")
         else:
-            # print("Non-nested grouping")
-            # This is just one normal rectangular grouping
-            thisgrouping.append(grouping)
-        for rectangle in thisgrouping:
-            # Color each rectangle in this grouping the same color
-            y1 = str(rectangle[0][0]+1)
-            x1 = str(rectangle[0][1]*2)
-            y2 = str(rectangle[1][0]+1)
-            x2 = str(rectangle[1][1]*2+1)
-            # print("x1:"+x1)
-            # print("y1:"+y1)
-            # print("x2:"+x2)
-            # print("y2:"+y2)
-            if y2 < y1: # Vertical wraparound
-                for y in range(int(y1), int(currentKMap.columns*2+1)):
-                    w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
-                    w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
-                for y in range(0, int(int(y2)+1)):
-                    w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
-                    w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
-            else: 
-                for y in range(int(y1), int(y2)+1):
-                    if x2 < x1: # Horizontal wraparound
-                        # Highlight from x1 to the end
-                        w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+ str(currentKMap.columns*2)), str(str(y)+'.'+x1),str(str(y)+'.'+str(currentKMap.columns*2)))
-                        w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+ str(currentKMap.columns*2)), background=colors[color], foreground="white")
-                        # Highlight from 0 to x2
-                        w.tag_add(str(str(y)+'.'+ str(0) +'.'+str(y)+'.'+ x2), str(str(y)+'.'+str(0)),str(str(y)+'.'+x2))
-                        w.tag_config(str(str(y)+'.'+str(0)+'.'+str(y)+'.'+ x2), background=colors[color], foreground="white")
-                    else:
-                        # Normal rectangle, no wraparounds
+            if str(grouping[0][0])[0] == '(':
+                # print("Nested grouping")
+                # Nested, this grouping is actually two merged rectangular groupings and may actually be non-rectangular.
+                # So, we will split it into its rectangular components.
+                thisgrouping.append(grouping[0])
+                thisgrouping.append(grouping[1])
+            else:
+                # print("Non-nested grouping")
+                # This is just one normal rectangular grouping
+                thisgrouping.append(grouping)
+            for rectangle in thisgrouping:
+                # Color each rectangle in this grouping the same color
+                y1 = str(rectangle[0][0]+1)
+                x1 = str(rectangle[0][1]*2)
+                y2 = str(rectangle[1][0]+1)
+                x2 = str(rectangle[1][1]*2+1)
+                # print("x1:"+x1)
+                # print("y1:"+y1)
+                # print("x2:"+x2)
+                # print("y2:"+y2)
+                if y2 < y1: # Vertical wraparound
+                    for y in range(int(y1), int(currentKMap.columns*2+1)):
                         w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
                         w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
-        color = color + 1
+                    for y in range(0, int(int(y2)+1)):
+                        w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
+                        w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
+                else: 
+                    for y in range(int(y1), int(y2)+1):
+                        if x2 < x1: # Horizontal wraparound
+                            # Highlight from x1 to the end
+                            w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+ str(currentKMap.columns*2)), str(str(y)+'.'+x1),str(str(y)+'.'+str(currentKMap.columns*2)))
+                            w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+ str(currentKMap.columns*2)), background=colors[color], foreground="white")
+                            # Highlight from 0 to x2
+                            w.tag_add(str(str(y)+'.'+ str(0) +'.'+str(y)+'.'+ x2), str(str(y)+'.'+str(0)),str(str(y)+'.'+x2))
+                            w.tag_config(str(str(y)+'.'+str(0)+'.'+str(y)+'.'+ x2), background=colors[color], foreground="white")
+                        else:
+                            # Normal rectangle, no wraparounds
+                            w.tag_add(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), str(str(y)+'.'+x1),str(str(y)+'.'+x2))
+                            w.tag_config(str(str(y)+'.'+x1+'.'+str(y)+'.'+x2), background=colors[color], foreground="white")
+            color = color + 1
     canvas.itemconfig(grouping_text_id, text=grouping_list)
 
 # Create a new grouping
@@ -219,11 +232,14 @@ else:
     currentKMap, variables, original = backend.main(data["original"])
     tmpgroupings = []
     for grouping in list(data["groupings"]):
-        parts = []
-        for part in grouping:
-            parts.append(tuple(part))
-        tmpgroupings.append(tuple(parts))
-    groupings = tuple(tmpgroupings)
+        if grouping == "4corners":
+            tmpgroupings.append(grouping)
+        else:
+            parts = []
+            for part in grouping:
+                parts.append(tuple(part))
+            tmpgroupings.append(tuple(parts))
+    groupings = tmpgroupings
     currentKMap.groupings = groupings
     ans = data["useranswer"]
     # print(original)
